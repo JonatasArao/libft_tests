@@ -4,7 +4,7 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "if [ \"$(basename ${fileDirname})\" == \"tests\" ]; then make debug FUNC=$(echo ${fileBasenameNoExtension} | sed 's/^test_//'); else make debug SRCDIR=${relativeFileDirname} FUNC=${fileBasenameNoExtension}; fi",
+            "command": "if [ \"$(basename ${fileDirname})\" == \"tests\" ]; then make debug FUNC=$(echo ${fileBasenameNoExtension} | sed 's/^test_//'); else make debug TARGET=$(dirname ${relativeFileDirname}) FUNC=${fileBasenameNoExtension}; fi",
             "group": "build",
             "problemMatcher": "$gcc"
         }
