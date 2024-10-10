@@ -54,6 +54,23 @@ Para limpar e recompilar todos os exercícios, execute:
 ```sh
 make re
 ```
+### Uso de Variáveis
+
+### FUNC
+
+A variável `FUNC` é usada para especificar qual função deve ser compilada. Por exemplo:
+
+```sh
+make FUNC=ft_isalpha
+```
+
+### TARGET
+
+A variável `TARGET` é usada para especificar o diretório do projeto. A pasta pode ter qualquer nome. Por exemplo:
+
+```sh
+make TARGET=libft
+```
 
 ## Depuração
 
