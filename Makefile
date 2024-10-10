@@ -1,24 +1,25 @@
 # Compiler and flags
-CC			= cc
-CFLAGS		= -Wall -Wextra -Werror
-LDFLAGS		= -lrt -lm
-RM			= rm -rf
+CC			=	cc
+CFLAGS		=	-Wall -Wextra -Werror
+LDFLAGS		=	-lrt -lm
+RM			=	rm -rf
 
 # Directories and files
-TARGET		= libft
-SRCDIR		= $(TARGET)/srcs
-INCDIR		= $(TARGET)/includes
-TESTDIR		= tests
-BINDIR		= build
+TARGET		=	libft
+SRCDIR		=	$(TARGET)/srcs
+INCDIR		=	$(TARGET)/includes
+TESTDIR		=	tests
+BINDIR		=	build
 
 # Functions and sources
-FUNC		= ft_isalpha
-SRCS		= $(addsuffix .c, $(addprefix $(SRCDIR)/, $(FUNC)))
-INC			= $(addprefix -I, $(INCDIR))
-HEADER		= $(INCDIR)/libft.h
-TESTS		= $(addsuffix .c, $(addprefix $(TESTDIR)/test_, $(FUNC)))
-OBJS		= $(SRCS:.c=.o)
-TEST_OBJS	= $(TESTS:.c=.o)
+FUNC		=	ft_isalpha \
+				ft_isdigit
+SRCS		=	$(addsuffix .c, $(addprefix $(SRCDIR)/, $(FUNC)))
+INC			=	$(addprefix -I, $(INCDIR))
+HEADER		=	$(INCDIR)/libft.h
+TESTS		=	$(addsuffix .c, $(addprefix $(TESTDIR)/test_, $(FUNC)))
+OBJS		=	$(SRCS:.c=.o)
+TEST_OBJS	=	$(TESTS:.c=.o)
 
 # Phony targets
 .PHONY: all clean debug debug-single debug-multiple
