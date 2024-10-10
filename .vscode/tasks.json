@@ -1,0 +1,12 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "if [ \"$(basename ${fileDirname})\" == \"tests\" ]; then make debug FUNC=$(echo ${fileBasenameNoExtension} | sed 's/^test_//'); else make debug SRCDIR=${relativeFileDirname} FUNC=${fileBasenameNoExtension}; fi",
+            "group": "build",
+            "problemMatcher": "$gcc"
+        }
+    ]
+}
