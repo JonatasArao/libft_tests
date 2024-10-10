@@ -57,7 +57,7 @@ clean:
 
 # Full clean target
 fclean: clean
-	$(RM) $(NAME)
+	$(RM) $(BINDIR)
 
 # Rebuild target
 re: fclean all
