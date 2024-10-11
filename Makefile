@@ -15,7 +15,8 @@ LIBDIR		=	lib
 # Functions and sources
 FUNC		=	ft_isalpha \
 				ft_isdigit \
-				ft_isalnum
+				ft_isalnum \
+				ft_isascii
 SRCS		=	$(addsuffix .c, $(addprefix $(SRCDIR)/, $(FUNC)))
 LIBRARY		=	$(LIBDIR)/lib$(patsubst lib%,%,$(TARGET)).a
 INC			=	$(addprefix -I, $(INCDIR))
