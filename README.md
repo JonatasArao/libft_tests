@@ -10,6 +10,8 @@ Este repositório contém testes do projeto libft presente no curso 42.zip. Abai
 │   └── tasks.json
 ├── libft/
 │   └── [arquivos do projeto libft]
+├── lib/
+│   └── [biblioteca compilada libft]
 ├── tests/
 │   ├── minunit.h
 │   └── [arquivos de teste para cada função]
@@ -58,10 +60,10 @@ make re
 
 ### FUNC
 
-A variável `FUNC` é usada para especificar qual função deve ser compilada. Por exemplo:
+A variável `TEST` é usada para especificar qual teste deve ser compilado. Por exemplo:
 
 ```sh
-make FUNC=ft_isalpha
+make TEST=ft_isalpha
 ```
 
 ### TARGET
@@ -76,10 +78,10 @@ make TARGET=libft
 
 ### Compilação para Depuração
 
-Para compilar um exercício específico para depuração, utilize a variável `FUNC`:
+Para compilar um teste de uma função específica para depuração, utilize a variável `TEST`:
 
 ```sh
-make debug FUNC=ft_isalpha
+make debug TEST=ft_isalpha
 ```
 
 Este comando compilará a função `ft_isalpha` e o arquivo de teste correspondente `test_ft_isalpha.c`, gerando um binário `test_debug` no diretório `build`.
