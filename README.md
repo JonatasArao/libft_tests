@@ -58,7 +58,7 @@ make re
 ```
 ### Uso de Variáveis
 
-### FUNC
+### TEST
 
 A variável `TEST` é usada para especificar qual teste deve ser compilado. Por exemplo:
 
