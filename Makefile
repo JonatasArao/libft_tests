@@ -34,7 +34,7 @@ TEST_OBJS	=	$(TESTS_SRCS:.c=.o)
 .PHONY: all clean debug debug-single debug-multiple
 
 # Default target
-all: $(addprefix $(BINDIR)/$(TARGET)/, $(TEST)) clean
+all: $(LIBRARY) $(addprefix $(BINDIR)/$(TARGET)/, $(TEST))
 
 # Library target
 $(LIBRARY): $(OBJS)
@@ -43,24 +43,24 @@ $(LIBRARY): $(OBJS)
 
 # Debug target
 debug: CFLAGS += -g
-debug: $(if $(filter 1,$(words $(TEST))),debug-single,debug-multiple) clean
+debug: $(if $(filter 1,$(words $(TEST))),debug-single,debug-multiple)
 
 # Single function debug
-debug-single: $(TEST_OBJS) $(LIBRARY)
+debug-single:$(LIBRARY) $(TEST_OBJS)
 	@mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $(TEST_OBJS) $(LDFLAGS) -o $(BINDIR)/test_debug
 
 # Multiple functions debug
-debug-multiple: $(addprefix debug_, $(TEST))
+debug-multiple: $(LIBRARY) $(addprefix debug_, $(TEST))
 
-debug_%: $(TESTDIR)/test_%.o $(LIBRARY)
+debug_%: $(TESTDIR)/test_%.o $(SRCDIR)/%.o
 	@mkdir -p $(BINDIR)/debug
-	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $(BINDIR)/debug/test_debug_$*
+	$(CC) $(CFLAGS) $< $(LDFLAGS) -o $(BINDIR)/debug/test_debug_$*
 
 # Build target
-$(BINDIR)/$(TARGET)/%: $(TESTDIR)/test_%.o $(LIBRARY)
+$(BINDIR)/$(TARGET)/%: $(TESTDIR)/test_%.o $(SRCDIR)/%.o
 	@mkdir -p $(BINDIR)/$(TARGET)
-	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
+	$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
 
 # Generic rule to compile .c files to .o files
 %.o: %.c $(HEADER)

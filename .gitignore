@@ -2,3 +2,4 @@ libft/
 build/
 lib/
 .vscode/c_cpp_properties.json
+*.o
