@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 10:21:37 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/14 10:36:04 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/14 11:04:55 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -805,8 +805,8 @@ MU_TEST(test_ft_toupper_c_equal_Z_plus_one)
 	int	actual_result;
 
 	// ACT
-	expected_result = 'Z' - 1;
-	actual_result = ft_toupper('Z' - 1);
+	expected_result = 'Z' + 1;
+	actual_result = ft_toupper('Z' + 1);
 
 	// ASSERT
 	mu_assert_char_eq(expected_result, actual_result);
