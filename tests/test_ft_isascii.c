@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 17:25:44 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/11 18:09:33 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/14 09:25:24 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -542,7 +542,7 @@ MU_TEST(test_ft_isascii_slash) {
 	mu_assert(actual_result != 0, "expected nonzero value");
 }
 
-MU_TEST(test_ft_isascii_0) {
+MU_TEST(test_ft_isascii_zero) {
 	// ARRANGE
 	int actual_result;
 
@@ -553,7 +553,7 @@ MU_TEST(test_ft_isascii_0) {
 	mu_assert(actual_result != 0, "expected nonzero value");
 }
 
-MU_TEST(test_ft_isascii_1) {
+MU_TEST(test_ft_isascii_one) {
 	// ARRANGE
 	int actual_result;
 
@@ -564,7 +564,7 @@ MU_TEST(test_ft_isascii_1) {
 	mu_assert(actual_result != 0, "expected nonzero value");
 }
 
-MU_TEST(test_ft_isascii_2) {
+MU_TEST(test_ft_isascii_two) {
 	// ARRANGE
 	int actual_result;
 
@@ -575,7 +575,7 @@ MU_TEST(test_ft_isascii_2) {
 	mu_assert(actual_result != 0, "expected nonzero value");
 }
 
-MU_TEST(test_ft_isascii_3) {
+MU_TEST(test_ft_isascii_three) {
 	// ARRANGE
 	int actual_result;
 
@@ -586,7 +586,7 @@ MU_TEST(test_ft_isascii_3) {
 	mu_assert(actual_result != 0, "expected nonzero value");
 }
 
-MU_TEST(test_ft_isascii_4) {
+MU_TEST(test_ft_isascii_four) {
 	// ARRANGE
 	int actual_result;
 
@@ -597,7 +597,7 @@ MU_TEST(test_ft_isascii_4) {
 	mu_assert(actual_result != 0, "expected nonzero value");
 }
 
-MU_TEST(test_ft_isascii_5) {
+MU_TEST(test_ft_isascii_five) {
 	// ARRANGE
 	int actual_result;
 
@@ -608,7 +608,7 @@ MU_TEST(test_ft_isascii_5) {
 	mu_assert(actual_result != 0, "expected nonzero value");
 }
 
-MU_TEST(test_ft_isascii_6) {
+MU_TEST(test_ft_isascii_six) {
 	// ARRANGE
 	int actual_result;
 
@@ -619,7 +619,7 @@ MU_TEST(test_ft_isascii_6) {
 	mu_assert(actual_result != 0, "expected nonzero value");
 }
 
-MU_TEST(test_ft_isascii_7) {
+MU_TEST(test_ft_isascii_seven) {
 	// ARRANGE
 	int actual_result;
 
@@ -630,7 +630,7 @@ MU_TEST(test_ft_isascii_7) {
 	mu_assert(actual_result != 0, "expected nonzero value");
 }
 
-MU_TEST(test_ft_isascii_8) {
+MU_TEST(test_ft_isascii_eight) {
 	// ARRANGE
 	int actual_result;
 
@@ -641,7 +641,7 @@ MU_TEST(test_ft_isascii_8) {
 	mu_assert(actual_result != 0, "expected nonzero value");
 }
 
-MU_TEST(test_ft_isascii_9) {
+MU_TEST(test_ft_isascii_nine) {
 	// ARRANGE
 	int actual_result;
 
@@ -1597,16 +1597,16 @@ MU_TEST_SUITE(ft_isascii_test_suite) {
 	MU_RUN_TEST(test_ft_isascii_minus);
 	MU_RUN_TEST(test_ft_isascii_period);
 	MU_RUN_TEST(test_ft_isascii_slash);
-	MU_RUN_TEST(test_ft_isascii_0);
-	MU_RUN_TEST(test_ft_isascii_1);
-	MU_RUN_TEST(test_ft_isascii_2);
-	MU_RUN_TEST(test_ft_isascii_3);
-	MU_RUN_TEST(test_ft_isascii_4);
-	MU_RUN_TEST(test_ft_isascii_5);
-	MU_RUN_TEST(test_ft_isascii_6);
-	MU_RUN_TEST(test_ft_isascii_7);
-	MU_RUN_TEST(test_ft_isascii_8);
-	MU_RUN_TEST(test_ft_isascii_9);
+	MU_RUN_TEST(test_ft_isascii_zero);
+	MU_RUN_TEST(test_ft_isascii_one);
+	MU_RUN_TEST(test_ft_isascii_two);
+	MU_RUN_TEST(test_ft_isascii_three);
+	MU_RUN_TEST(test_ft_isascii_four);
+	MU_RUN_TEST(test_ft_isascii_five);
+	MU_RUN_TEST(test_ft_isascii_six);
+	MU_RUN_TEST(test_ft_isascii_seven);
+	MU_RUN_TEST(test_ft_isascii_eight);
+	MU_RUN_TEST(test_ft_isascii_nine);
 	MU_RUN_TEST(test_ft_isascii_colon);
 	MU_RUN_TEST(test_ft_isascii_semicolon);
 	MU_RUN_TEST(test_ft_isascii_less_than);
