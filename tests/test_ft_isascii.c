@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 17:25:44 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/14 09:25:24 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/14 12:07:18 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1684,8 +1684,8 @@ MU_TEST_SUITE(ft_isascii_test_suite) {
 	MU_RUN_TEST(test_ft_isascii_non_ascii_ø);
 	MU_RUN_TEST(test_ft_isascii_non_ascii_ß);
 	MU_RUN_TEST(test_ft_isascii_max_unsigned_char);
-    MU_RUN_TEST(test_ft_isascii_negative_value);
-    MU_RUN_TEST(test_ft_isascii_large_value);
+	MU_RUN_TEST(test_ft_isascii_negative_value);
+	MU_RUN_TEST(test_ft_isascii_large_value);
 }
 
 int main(void) {
