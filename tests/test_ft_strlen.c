@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:34:16 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/14 12:01:18 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/14 12:06:39 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -174,11 +174,11 @@ MU_TEST_SUITE(ft_strlen_test_suite)
 	MU_RUN_TEST(test_ft_strlen_forty_two);
 	MU_RUN_TEST(test_ft_strlen_42);
 	MU_RUN_TEST(test_ft_strlen_Forty_Two_42);
-    MU_RUN_TEST(test_ft_strlen_string_with_special_chars);
-    MU_RUN_TEST(test_ft_strlen_string_with_null_char);
-    MU_RUN_TEST(test_ft_strlen_long_string);
-    MU_RUN_TEST(test_ft_strlen_multibyte_chars);
-    MU_RUN_TEST(test_ft_strlen_escape_chars);
+	MU_RUN_TEST(test_ft_strlen_string_with_special_chars);
+	MU_RUN_TEST(test_ft_strlen_string_with_null_char);
+	MU_RUN_TEST(test_ft_strlen_long_string);
+	MU_RUN_TEST(test_ft_strlen_multibyte_chars);
+	MU_RUN_TEST(test_ft_strlen_escape_chars);
 }
 
 int	main(void) {
