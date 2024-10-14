@@ -6,8 +6,8 @@ RM			=	rm -rf
 
 # Directories and files
 TARGET		=	libft
-SRCDIR		=	$(TARGET)/srcs
-INCDIR		=	$(TARGET)/includes
+SRCDIR		=	$(TARGET)
+INCDIR		=	$(TARGET)
 TESTDIR		=	tests
 BINDIR		=	build
 LIBDIR		=	lib
