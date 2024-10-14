@@ -18,7 +18,8 @@ FUNC		=	ft_isalpha \
 				ft_isalnum \
 				ft_isascii \
 				ft_isprint \
-				ft_toupper
+				ft_toupper \
+				ft_tolower
 SRCS		=	$(addsuffix .c, $(addprefix $(SRCDIR)/, $(FUNC)))
 LIBRARY		=	$(LIBDIR)/lib$(patsubst lib%,%,$(TARGET)).a
 INC			=	$(addprefix -I, $(INCDIR))
