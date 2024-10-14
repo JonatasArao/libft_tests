@@ -33,34 +33,38 @@ TEST_OBJS	=	$(TESTS_SRCS:.c=.o)
 # Phony targets
 .PHONY: all clean debug debug-single debug-multiple
 
-# Default target
+# Default target: builds the library and all tests
 all: $(LIBRARY) $(addprefix $(BINDIR)/$(TARGET)/, $(TEST))
 
-# Library target
+# Debug target: adds debug flags and determines if single or multiple tests should be debugged
+debug: CFLAGS += -g
+debug: $(if $(filter 1,$(words $(TEST))),debug-single,debug-multiple)
+
+# Single function debug: builds the library and a single test debug executable
+debug-single: $(LIBRARY) $(BINDIR)/test_debug
+
+# Multiple functions debug: builds the library and multiple test debug executables
+debug-multiple: $(LIBRARY) $(addprefix $(BINDIR)/debug/test_debug_, $(TEST))
+
+# Library target: creates the static library from object files
 $(LIBRARY): $(OBJS)
 	@mkdir -p $(LIBDIR)
 	ar rcs $(LIBRARY) $(OBJS)
 
-# Debug target
-debug: CFLAGS += -g
-debug: $(if $(filter 1,$(words $(TEST))),debug-single,debug-multiple)
-
-# Single function debug
-debug-single:$(LIBRARY) $(TEST_OBJS)
-	@mkdir -p $(BINDIR)
-	$(CC) $(CFLAGS) $(TEST_OBJS) $(LDFLAGS) -o $(BINDIR)/test_debug
-
-# Multiple functions debug
-debug-multiple: $(LIBRARY) $(addprefix debug_, $(TEST))
-
-debug_%: $(TESTDIR)/test_%.o $(SRCDIR)/%.o
-	@mkdir -p $(BINDIR)/debug
-	$(CC) $(CFLAGS) $< $(LDFLAGS) -o $(BINDIR)/debug/test_debug_$*
-
-# Build target
+# Build target: compiles and links a test executable
 $(BINDIR)/$(TARGET)/%: $(TESTDIR)/test_%.o $(SRCDIR)/%.o
 	@mkdir -p $(BINDIR)/$(TARGET)
 	$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
+
+# Build target to debug a selected test: compiles and links a single test debug executable
+$(BINDIR)/test_debug: $(TEST_OBJS) $(OBJS)
+	@mkdir -p $(BINDIR)
+	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
+
+# Build target to debug individual tests: compiles and links multiple test debug executables
+$(BINDIR)/debug/test_debug_%: $(TESTDIR)/test_%.o $(SRCDIR)/%.o
+	@mkdir -p $(BINDIR)/debug
+	$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
 
 # Generic rule to compile .c files to .o files
 %.o: %.c $(HEADER)
