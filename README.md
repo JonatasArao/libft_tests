@@ -7,14 +7,18 @@ Este repositório contém testes do projeto libft presente no curso 42.zip. Abai
 /
 ├── .vscode/
 │   ├── launch.json
-│   └── tasks.json
+│   ├── tasks.json
+│   ├── c_cpp_properties.json
+│   └── settings.json
 ├── libft/
 │   └── [arquivos do projeto libft]
 ├── lib/
-│   └── [biblioteca compilada libft]
+│   └── [bibliotecas compiladas (libft e mocks)]
 ├── tests/
 │   ├── minunit.h
 │   └── [arquivos de teste para cada função]
+├── mocks/
+│   └── [implementações de funções e dados falsos para testes]
 ├── build/
 │   └── [binários compilados]
 ├── .gitignore
@@ -34,6 +38,24 @@ Para compilar todos os exercícios, execute o comando:
 ```sh
 make all
 ```
+
+### Execução de Testes
+
+Para executar os testes, utilize a regra `run` do Makefile:
+
+```sh
+make run
+```
+
+### Execução de Teste Único
+
+Para executar um teste específico, utilize a variável `TEST` com a regra `run`:
+
+```sh
+make run TEST=ft_isalpha
+```
+
+Substitua `ft_isalpha` pelo nome da função que você deseja testar.
 
 ### Limpeza
 
@@ -96,22 +118,20 @@ make debug
 
 Este comando compilará todos os exercícios e seus respectivos arquivos de teste, gerando binários de depuração no diretório `build/debug`.
 
-### Execução de Testes
+### Execução de Testes para Depuração
 
-Para executar os testes, navegue até o diretório `build` e execute o binário gerado:
+Para executar os testes em modo de depuração, utilize a regra `run-debug` do Makefile:
 
 ```sh
-cd build
-./test_debug
+make run-debug
 ```
 
-### Execução de Testes Múltiplos
+### Execução de Teste Único para Depuração
 
-Se você compilou vários testes usando `make debug`, os binários de depuração estarão no diretório `build/debug`. Para executar um teste específico, navegue até o diretório e execute o binário correspondente:
+Para executar um teste específico em modo de depuração, utilize a regra `run-debug-single` com a variável `TEST`:
 
 ```sh
-cd build/debug
-./test_debug_ft_isalpha
+make run-debug-single TEST=ft_isalpha
 ```
 
 Substitua `ft_isalpha` pelo nome da função que você deseja testar.
