@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 16:31:05 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/15 11:12:30 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/15 13:47:40 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "minunit.h"
 
 char	*ft_strdup(const char *src);
+
+extern int mock_malloc_active;
 
 MU_TEST(test_ft_strdup_forty_two)
 {
@@ -165,7 +167,9 @@ MU_TEST_SUITE(ft_strdup_test_suite)
 }
 
 int	main(void) {
+	mock_malloc_active = 1;
 	MU_RUN_SUITE(ft_strdup_test_suite);
 	MU_REPORT();
+	mock_malloc_active = 0;
 	return MU_EXIT_CODE;
 }
