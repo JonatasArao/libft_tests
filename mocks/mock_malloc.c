@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 10:17:33 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/15 11:34:53 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/15 13:37:07 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <dlfcn.h>
+
+int mock_malloc_active = 0;
 
 void* malloc(size_t size) {
 	void *(*original_malloc)(size_t);
@@ -27,9 +29,13 @@ void* malloc(size_t size) {
 		exit(EXIT_FAILURE);
 	}
 
-	void *tmp = original_malloc(size);
-	if (tmp != NULL) {
-		memset(tmp, ' ', size);
+	if (mock_malloc_active) {
+		void *tmp = original_malloc(size);
+		if (tmp != NULL) {
+			memset(tmp, ' ', size);
+		}
+		return tmp;
+	} else {
+		return original_malloc(size);
 	}
-	return tmp;
 }
