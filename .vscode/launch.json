@@ -12,7 +12,20 @@
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
-            "environment": [],
+            "environment": [
+                {
+                    "name": "LD_PRELOAD",
+                    "value": "${workspaceFolder}/lib/mocks.so"
+                },
+                {
+                    "name": "DYLD_INSERT_LIBRARIES",
+                    "value": "${workspaceFolder}/lib/mocks.dylib"
+                },
+                {
+                    "name": "PATH",
+                    "value": "${workspaceFolder}/lib;${env:PATH}"
+                }
+            ],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
