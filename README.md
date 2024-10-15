@@ -128,7 +128,7 @@ make run-debug
 
 ### Execução de Teste Único para Depuração
 
-Para executar um teste específico em modo de depuração, utilize a regra `run-debug-single` com a variável `TEST`:
+Para executar um teste específico em modo de depuração, utilize a regra `run-debug` com a variável `TEST`:
 
 ```sh
 make run-debug TEST=ft_isalpha
