@@ -131,7 +131,7 @@ make run-debug
 Para executar um teste específico em modo de depuração, utilize a regra `run-debug-single` com a variável `TEST`:
 
 ```sh
-make run-debug-single TEST=ft_isalpha
+make run-debug TEST=ft_isalpha
 ```
 
 Substitua `ft_isalpha` pelo nome da função que você deseja testar.
