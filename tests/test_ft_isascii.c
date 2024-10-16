@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/11 17:25:44 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/14 12:07:18 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/16 08:15:58 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -1435,8 +1435,7 @@ MU_TEST(test_ft_isascii_128)
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
 }
-
-MU_TEST(test_ft_isascii_non_ascii_ç)
+MU_TEST(test_ft_isascii_non_ascii_cedilla)
 {
 	// ARRANGE
 	int expected_result;
@@ -1450,7 +1449,7 @@ MU_TEST(test_ft_isascii_non_ascii_ç)
 	mu_assert_int_eq(expected_result, actual_result);
 }
 
-MU_TEST(test_ft_isascii_non_ascii_ñ)
+MU_TEST(test_ft_isascii_non_ascii_enye)
 {
 	// ARRANGE
 	int expected_result;
@@ -1464,7 +1463,7 @@ MU_TEST(test_ft_isascii_non_ascii_ñ)
 	mu_assert_int_eq(expected_result, actual_result);
 }
 
-MU_TEST(test_ft_isascii_non_ascii_ü)
+MU_TEST(test_ft_isascii_non_ascii_umlaut_u)
 {
 	// ARRANGE
 	int expected_result;
@@ -1478,7 +1477,7 @@ MU_TEST(test_ft_isascii_non_ascii_ü)
 	mu_assert_int_eq(expected_result, actual_result);
 }
 
-MU_TEST(test_ft_isascii_non_ascii_ø)
+MU_TEST(test_ft_isascii_non_ascii_o_slash)
 {
 	// ARRANGE
 	int expected_result;
@@ -1492,7 +1491,7 @@ MU_TEST(test_ft_isascii_non_ascii_ø)
 	mu_assert_int_eq(expected_result, actual_result);
 }
 
-MU_TEST(test_ft_isascii_non_ascii_ß)
+MU_TEST(test_ft_isascii_non_ascii_sharp_s)
 {
 	// ARRANGE
 	int expected_result;
@@ -1678,11 +1677,11 @@ MU_TEST_SUITE(ft_isascii_test_suite) {
 	MU_RUN_TEST(test_ft_isascii_tilde);
 	MU_RUN_TEST(test_ft_isascii_delete);
 	MU_RUN_TEST(test_ft_isascii_128);
-	MU_RUN_TEST(test_ft_isascii_non_ascii_ç);
-	MU_RUN_TEST(test_ft_isascii_non_ascii_ñ);
-	MU_RUN_TEST(test_ft_isascii_non_ascii_ü);
-	MU_RUN_TEST(test_ft_isascii_non_ascii_ø);
-	MU_RUN_TEST(test_ft_isascii_non_ascii_ß);
+	MU_RUN_TEST(test_ft_isascii_non_ascii_cedilla);
+	MU_RUN_TEST(test_ft_isascii_non_ascii_enye);
+	MU_RUN_TEST(test_ft_isascii_non_ascii_umlaut_u);
+	MU_RUN_TEST(test_ft_isascii_non_ascii_o_slash);
+	MU_RUN_TEST(test_ft_isascii_non_ascii_sharp_s);
 	MU_RUN_TEST(test_ft_isascii_max_unsigned_char);
 	MU_RUN_TEST(test_ft_isascii_negative_value);
 	MU_RUN_TEST(test_ft_isascii_large_value);
