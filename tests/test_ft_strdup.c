@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 16:31:05 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/16 13:19:29 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/16 13:40:33 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -201,14 +201,12 @@ MU_TEST(test_ft_strdup_very_long_string)
 	free(actual_result);
 }
 
-MU_TEST(test_ft_strdup_null_pointer) {
-	// ARRANGE
-	char *actual_result;
-
+MU_TEST(test_ft_strdup_null_pointer)
+{
 	// ACT & ASSERT
 	if (setjmp(jump_buffer) == 0) {
 		signal(SIGSEGV, segfault_handler);
-		actual_result = ft_strdup(NULL);
+		ft_strdup(NULL);
 		mu_fail("Expected segfault, but function returned");
 	} else {
 		mu_check(1); // Segfault capturado com sucesso
