@@ -78,6 +78,7 @@ Para limpar e recompilar todos os exercícios, execute:
 ```sh
 make re
 ```
+
 ### Uso de Variáveis
 
 ### TEST
@@ -98,40 +99,20 @@ make TARGET=libft
 
 ## Depuração
 
-### Compilação para Depuração
+### Execução de Testes para Depuração
 
-Para compilar um teste de uma função específica para depuração, utilize a variável `TEST`:
-
-```sh
-make debug TEST=ft_isalpha
-```
-
-Este comando compilará a função `ft_isalpha` e o arquivo de teste correspondente `test_ft_isalpha.c`, gerando um binário `test_debug` no diretório `build`.
-
-### Compilação de Todos os Exercícios para Depuração
-
-Para compilar todos os exercícios para depuração, execute o comando:
+Para executar os testes em modo de depuração, utilize a regra `debug` do Makefile:
 
 ```sh
 make debug
 ```
 
-Este comando compilará todos os exercícios e seus respectivos arquivos de teste, gerando binários de depuração no diretório `build/debug`.
-
-### Execução de Testes para Depuração
-
-Para executar os testes em modo de depuração, utilize a regra `run-debug` do Makefile:
-
-```sh
-make run-debug
-```
-
 ### Execução de Teste Único para Depuração
 
-Para executar um teste específico em modo de depuração, utilize a regra `run-debug` com a variável `TEST`:
+Para executar um teste específico em modo de depuração, utilize a regra `debug` com a variável `TEST`:
 
 ```sh
-make run-debug TEST=ft_isalpha
+make debug TEST=ft_isalpha
 ```
 
 Substitua `ft_isalpha` pelo nome da função que você deseja testar.

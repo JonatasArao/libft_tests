@@ -1,6 +1,6 @@
 # Compiler and flags
 CC			=	cc
-CFLAGS		=	-Wall -Wextra -Werror
+CFLAGS		=	-Wall -Wextra -Werror -g
 LDFLAGS		=	-lrt -lm -L$(LIBDIR) -l$(patsubst lib%,%,$(TARGET)) -lmocks
 RM			=	rm -rf
 
@@ -49,12 +49,14 @@ FUNC		=	ft_isalpha \
 				ft_tolower \
 				ft_strlen \
 				ft_strdup
+EXIST_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
+MISS_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
 LIBRARY		=	$(LIBDIR)/lib$(patsubst lib%,%,$(TARGET)).a
 INC			=	$(addprefix -I, $(INCDIR))
 HEADER		=	$(INCDIR)/libft.h
-SRCS		=	$(addsuffix .c, $(addprefix $(SRCDIR)/, $(FUNC)))
+SRCS		=	$(addsuffix .c, $(addprefix $(SRCDIR)/, $(EXIST_FUNC)))
 OBJS		=	$(SRCS:.c=.o)
-TEST		=	$(FUNC)
+TEST		=	$(EXIST_FUNC)
 TESTS_SRCS	=	$(addsuffix .c, $(addprefix $(TESTDIR)/test_, $(TEST)))
 TEST_OBJS	=	$(TESTS_SRCS:.c=.o)
 
@@ -62,37 +64,48 @@ TEST_OBJS	=	$(TESTS_SRCS:.c=.o)
 .PHONY: all clean debug debug-multiple debug-single fclean re run run-debug run-debug-multiple run-debug-single
 
 # Default target: builds the library and all tests
-all: $(LIBRARY) $(MOCKLIB) $(addprefix $(BINDIR)/$(TARGET)/, $(TEST))
+all: $(if $(filter 1,$(words $(TEST))),single,multiple)
+	@echo "\033[1;32mCompiled functions: $(patsubst '\t'%,%,$(EXIST_FUNC))\033[0m"
+	@if [ $(MISS_FUNC) ]; then \
+		echo "\033[1;31mMissing functions: $(patsubst '\t'%,%,$(MISS_FUNC))\033[0m"; \
+	fi
+
+# Single function build: builds the library and a single test executable
+single: $(LIBRARY) $(MOCKLIB) $(BINDIR)/test.out
+	@echo "\033[1;32mBuild complete: single target\033[0m"
+
+# Build all tests
+multiple: $(LIBRARY) $(MOCKLIB) $(addsuffix .out, $(addprefix $(BINDIR)/$(TARGET)/test_, $(TEST)))
 	@echo "\033[1;33mBuild complete: all targets\033[0m"
 
-run: all
-	@for bin in $(addprefix $(BINDIR)/$(TARGET)/, $(TEST)); do \
-		bin_name=$$(basename $$bin); \
+# Run target: runs the appropriate tests based on the number of tests
+run: $(if $(filter 1,$(words $(TEST))),run-single,run-multiple)
+
+# Run single test target
+run-single: single
+	@echo "\033[1;34mRunning test: $(TEST)\033[0m"; \
+	$(LIBRARY_PATH_VAR)=$(LIBDIR) $(BINDIR)/test.out; \
+
+# Run multiple tests target
+run-multiple: all-multiple
+	@for bin in $(addsuffix .out, $(addprefix $(BINDIR)/$(TARGET)/test_, $(TEST))); do \
+		bin_name=$$(basename $$bin | sed 's/^test_//' | sed 's/\.out$$//'); \
 		echo "\033[1;34mRunning test: $$bin_name\033[0m"; \
 		$(LIBRARY_PATH_VAR)=$(LIBDIR) $$bin; \
 	done
 
-# Debug target: adds debug flags and determines if single or multiple tests should be debugged
-debug: CFLAGS += -g
+# Debug target: debugs the appropriate tests based on the number of tests
 debug: $(if $(filter 1,$(words $(TEST))),debug-single,debug-multiple)
 
-# Single function debug: builds the library and a single test debug executable
-debug-single: $(LIBRARY) $(MOCKLIB) $(BINDIR)/test_debug
-	@echo "\033[1;32mBuild complete: single debug target\033[0m"
-
-# Multiple functions debug: builds the library and multiple test debug executables
-debug-multiple: $(LIBRARY) $(MOCKLIB) $(addprefix $(BINDIR)/debug/test_debug_, $(TEST))
-	@echo "\033[1;32mBuild complete: multiple debug targets\033[0m"
-
-run-debug: debug $(if $(filter 1,$(words $(TEST))),run-debug-single,run-debug-multiple)
-
-run-debug-single: $(LIBRARY) $(MOCKLIB) $(BINDIR)/test_debug
+# Debug single test target
+debug-single: single
 	@echo "\033[1;35mDebugging test: $(TEST)\033[0m"
-	@$(LIBRARY_PATH_VAR)=$(LIBDIR) gdb --args $(BINDIR)/test_debug
+	@$(LIBRARY_PATH_VAR)=$(LIBDIR) gdb --args $(BINDIR)/test.out
 
-run-debug-multiple: $(LIBRARY) $(MOCKLIB) $(addprefix $(BINDIR)/debug/test_debug_, $(TEST))
-	@for bin in $(addprefix $(BINDIR)/debug/test_debug_, $(TEST)); do \
-		bin_name=$$(basename $$bin | sed 's/^test_debug_//'); \
+# Debug multiple tests target
+debug-multiple: all
+	@for bin in $(addsuffix .out, $(addprefix $(BINDIR)/$(TARGET)/test_, $(TEST))); do \
+		bin_name=$$(basename $$bin | sed 's/^test_//' | sed 's/\.out$$//'); \
 		echo "\033[1;35mDebugging test: $$bin_name\033[0m"; \
 		$(LIBRARY_PATH_VAR)=$(LIBDIR) gdb --args $$bin; \
 	done
@@ -124,22 +137,16 @@ $(TESTDIR)/%.o: $(TESTDIR)/%.c $(HEADER)
 	@echo "\033[0;32mCompiled: $<\033[0m"
 
 # Build target: compiles and links a test executable
-$(BINDIR)/$(TARGET)/%: $(TESTDIR)/test_%.o $(SRCDIR)/%.o
+$(BINDIR)/$(TARGET)/test_%.out: $(TESTDIR)/test_%.o $(SRCDIR)/%.o
 	@mkdir -p $(BINDIR)/$(TARGET)
 	@$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
 	@echo "\033[1;32mBuild complete: $@\033[0m"
 
 # Build target to debug a selected test: compiles and links a single test debug executable
-$(BINDIR)/test_debug: $(TEST_OBJS) $(OBJS)
+$(BINDIR)/test.out: $(TEST_OBJS) $(OBJS)
 	@mkdir -p $(BINDIR)
 	@$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
-	@echo "\033[1;32mBuild complete: test_debug\033[0m"
-
-# Build target to debug individual tests: compiles and links multiple test debug executables
-$(BINDIR)/debug/test_debug_%: $(TESTDIR)/test_%.o $(SRCDIR)/%.o
-	@mkdir -p $(BINDIR)/debug
-	@$(CC) $(CFLAGS) $^ $(LDFLAGS) -o $@
-	@echo "\033[1;32mBuild complete: $@\033[0m"
+	@echo "\033[1;32mBuild complete: test.out\033[0m"
 
 # Clean target
 clean:
