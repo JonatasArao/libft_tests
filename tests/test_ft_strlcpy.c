@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:07:17 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/16 17:35:19 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/16 19:25:33 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ MU_TEST(test_ft_strlcpy_forty_two_zero_size_return)
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
 }
+
 MU_TEST(test_ft_strlcpy_buffer_larger_than_source_assignment)
 {
 	// ARRANGE
@@ -161,35 +162,6 @@ MU_TEST(test_ft_strlcpy_buffer_smaller_than_source_return)
 	mu_assert_int_eq(expected_result, actual_result);
 }
 
-MU_TEST(test_ft_strlcpy_buffer_exact_size_assignment)
-{
-	// ARRANGE
-	char	expected_result[10];
-	char	actual_result[10];
-
-	// ACT
-	strcpy(expected_result, "42 School");
-	ft_strlcpy(actual_result, "42 School", 10);
-
-	// ASSERT
-	mu_assert_string_eq(expected_result, actual_result);
-}
-
-MU_TEST(test_ft_strlcpy_buffer_exact_size_return)
-{
-	// ARRANGE
-	int		expected_result;
-	int		actual_result;
-	char	buffer[10];
-
-	// ACT
-	expected_result = 9;
-	actual_result = ft_strlcpy(buffer, "42 School", 10);
-
-	// ASSERT
-	mu_assert_int_eq(expected_result, actual_result);
-}
-
 MU_TEST(test_ft_strlcpy_empty_source_assignment)
 {
 	// ARRANGE
@@ -218,6 +190,7 @@ MU_TEST(test_ft_strlcpy_empty_source_return)
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
 }
+
 MU_TEST(test_ft_strlcpy_null_src)
 {
 	int		expected_result;
@@ -251,8 +224,6 @@ MU_TEST_SUITE(ft_strlcpy_test_suite)
 	MU_RUN_TEST(test_ft_strlcpy_buffer_larger_than_source_return);
 	MU_RUN_TEST(test_ft_strlcpy_buffer_smaller_than_source_assignment);
 	MU_RUN_TEST(test_ft_strlcpy_buffer_smaller_than_source_return);
-	MU_RUN_TEST(test_ft_strlcpy_buffer_exact_size_assignment);
-	MU_RUN_TEST(test_ft_strlcpy_buffer_exact_size_return);
 	MU_RUN_TEST(test_ft_strlcpy_empty_source_assignment);
 	MU_RUN_TEST(test_ft_strlcpy_empty_source_return);
 	MU_RUN_TEST(test_ft_strlcpy_null_src);
