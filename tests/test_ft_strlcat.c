@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 17:43:35 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/16 20:04:13 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/16 20:16:59 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,31 +77,32 @@ MU_TEST(test_ft_strlcat_forty_two_return)
 	mu_assert_int_eq(expected_result, actual_result);
 }
 
-MU_TEST(test_ft_strlcat_forty_two_zero_size_assignment)
+MU_TEST(test_ft_strlcat_size_equal_zero_assignment)
 {
 	// ARRANGE
-	char	expected_result[1];
-	char	actual_result[1];
+	char	expected_result[7];
+	char	actual_result[7];
 
 	// ACT
-	strcpy(expected_result, "");
-	strcpy(actual_result, "");
-	ft_strlcat(actual_result, "Ecole 42", 0);
+	strcpy(expected_result, "Ecole ");
+	strcpy(actual_result, "Ecole ");
+	ft_strlcat(actual_result, "42", 0);
 
 	// ASSERT
 	mu_assert_string_eq(expected_result, actual_result);
 }
 
-MU_TEST(test_ft_strlcat_forty_two_zero_size_return)
+MU_TEST(test_ft_strlcat_size_equal_zero_return)
 {
 	// ARRANGE
 	int		expected_result;
 	int		actual_result;
-	char	buffer[1];
+	char	buffer[7];
 
 	// ACT
-	expected_result = 8;
-	actual_result = ft_strlcat(buffer, "Ecole 42", 0);
+	expected_result = 2;
+	strcpy(buffer, "Ecole ");
+	actual_result = ft_strlcat(buffer, "42", 0);
 
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
@@ -289,8 +290,8 @@ MU_TEST_SUITE(ft_strlcat_test_suite)
 {
 	MU_RUN_TEST(test_ft_strlcat_forty_two_assignment);
 	MU_RUN_TEST(test_ft_strlcat_forty_two_return);
-	MU_RUN_TEST(test_ft_strlcat_forty_two_zero_size_assignment);
-	MU_RUN_TEST(test_ft_strlcat_forty_two_zero_size_return);
+	MU_RUN_TEST(test_ft_strlcat_size_equal_zero_assignment);
+	MU_RUN_TEST(test_ft_strlcat_size_equal_zero_return);
 	MU_RUN_TEST(test_ft_strlcat_size_larger_than_src_size_plus_dst_size_assignment);
 	MU_RUN_TEST(test_ft_strlcat_size_larger_than_src_size_plus_dst_size_return);
 	MU_RUN_TEST(test_ft_strlcat_size_smaller_than_dst_size_assignment);
