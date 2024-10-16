@@ -6,13 +6,45 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 14:07:17 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/16 15:40:37 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/16 17:35:19 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <signal.h>
 #include "minunit.h"
 
 size_t	ft_strlcpy(char *dst, const char *src, size_t size);
+
+int capture_segfault_ft_strlcpy(size_t (*f)(char *, const char *, size_t), char *dst, const char *src, size_t size)
+{
+	pid_t pid = fork();
+	if (pid == 0)
+	{
+		// Child process executes the test
+		f(dst, src, size);
+		exit(0);
+	}
+	else if (pid > 0)
+	{
+		// Parent process waits for the child
+		int status;
+		waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
+		{
+			return 1;
+		}
+		return 0;
+	}
+	else
+	{
+		perror("fork");
+		exit(1);
+	}
+}
 
 MU_TEST(test_ft_strlcpy_forty_two_assignment)
 {
@@ -186,6 +218,28 @@ MU_TEST(test_ft_strlcpy_empty_source_return)
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
 }
+MU_TEST(test_ft_strlcpy_null_src)
+{
+	int		expected_result;
+	int		actual_result;
+	char	dst[2];
+
+	// ACT & ASSERT
+	actual_result = 1;
+	expected_result = capture_segfault_ft_strlcpy(&ft_strlcpy, dst, NULL, 3);
+	mu_assert(expected_result == actual_result, "Expected segmentation fault, but it did not occur.");
+}
+
+MU_TEST(test_ft_strlcpy_null_dst)
+{
+	int		expected_result;
+	int		actual_result;
+
+	// ACT & ASSERT
+	actual_result = 1;
+	expected_result = capture_segfault_ft_strlcpy(&ft_strlcpy, NULL, "", 3);
+	mu_assert(expected_result == actual_result, "Expected segmentation fault, but it did not occur.");
+}
 
 MU_TEST_SUITE(ft_strlcpy_test_suite)
 {
@@ -201,6 +255,8 @@ MU_TEST_SUITE(ft_strlcpy_test_suite)
 	MU_RUN_TEST(test_ft_strlcpy_buffer_exact_size_return);
 	MU_RUN_TEST(test_ft_strlcpy_empty_source_assignment);
 	MU_RUN_TEST(test_ft_strlcpy_empty_source_return);
+	MU_RUN_TEST(test_ft_strlcpy_null_src);
+	MU_RUN_TEST(test_ft_strlcpy_null_dst);
 }
 
 int	main(void) {
