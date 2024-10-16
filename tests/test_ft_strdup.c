@@ -6,26 +6,46 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 16:31:05 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/16 13:40:33 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/16 17:35:10 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <signal.h>
-#include <setjmp.h>
 #include <stdlib.h>
-#include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <signal.h>
 #include "minunit.h"
 
 char	*ft_strdup(const char *src);
 
 extern int mock_malloc_active;
 
-jmp_buf jump_buffer;
-
-void segfault_handler(int sig)
+int capture_segfault_ft_strdup(char *(*f)(const char *), const char *src)
 {
-	(void)sig; // Marcar o parâmetro como não utilizado
-	longjmp(jump_buffer, 1);
+	pid_t pid = fork();
+	if (pid == 0)
+	{
+		// Child process executes the test
+		f(src);
+		exit(0);
+	}
+	else if (pid > 0)
+	{
+		// Parent process waits for the child
+		int status;
+		waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
+		{
+			return 1;
+		}
+		return 0;
+	}
+	else
+	{
+		perror("fork");
+		exit(1);
+	}
 }
 
 MU_TEST(test_ft_strdup_is_null_terminated)
@@ -203,17 +223,13 @@ MU_TEST(test_ft_strdup_very_long_string)
 
 MU_TEST(test_ft_strdup_null_pointer)
 {
-	// ACT & ASSERT
-	if (setjmp(jump_buffer) == 0) {
-		signal(SIGSEGV, segfault_handler);
-		ft_strdup(NULL);
-		mu_fail("Expected segfault, but function returned");
-	} else {
-		mu_check(1); // Segfault capturado com sucesso
-	}
+	int		expected_result;
+	int		actual_result;
 
-	// CLEANUP
-	signal(SIGSEGV, SIG_DFL); // Reset signal handler to default
+	// ACT & ASSERT
+	actual_result = 1;
+	expected_result = capture_segfault_ft_strdup(&ft_strdup, NULL);
+	mu_assert(expected_result == actual_result, "Expected segmentation fault, but it did not occur.");
 }
 
 MU_TEST_SUITE(ft_strdup_test_suite)
