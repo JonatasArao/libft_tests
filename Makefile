@@ -48,7 +48,8 @@ FUNC		=	ft_isalpha \
 				ft_toupper \
 				ft_tolower \
 				ft_strlen \
-				ft_strdup
+				ft_strdup \
+				ft_strlcpy
 EXIST_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
 MISS_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
 LIBRARY		=	$(LIBDIR)/lib$(patsubst lib%,%,$(TARGET)).a
@@ -65,18 +66,18 @@ TEST_OBJS	=	$(TESTS_SRCS:.c=.o)
 
 # Default target: builds the library and all tests
 all: $(if $(filter 1,$(words $(TEST))),single,multiple)
-	@echo "\033[1;32mCompiled functions: $(patsubst '\t'%,%,$(EXIST_FUNC))\033[0m"
+	@echo "\033[1;35mAvailable functions: $(patsubst '\t'%,%,$(EXIST_FUNC))\033[0m"
 	@if [ $(MISS_FUNC) ]; then \
 		echo "\033[1;31mMissing functions: $(patsubst '\t'%,%,$(MISS_FUNC))\033[0m"; \
 	fi
 
 # Single function build: builds the library and a single test executable
 single: $(LIBRARY) $(MOCKLIB) $(BINDIR)/test.out
-	@echo "\033[1;32mBuild complete: single target\033[0m"
+	@echo "\033[1;33mTest for $(TEST) is available at: $(BINDIR)/test.out\033[0m"
 
 # Build all tests
 multiple: $(LIBRARY) $(MOCKLIB) $(addsuffix .out, $(addprefix $(BINDIR)/$(TARGET)/test_, $(TEST)))
-	@echo "\033[1;33mBuild complete: all targets\033[0m"
+	@echo "\033[1;33mAll tests are available at: $(BINDIR)/$(TARGET)/\033[0m"
 
 # Run target: runs the appropriate tests based on the number of tests
 run: $(if $(filter 1,$(words $(TEST))),run-single,run-multiple)
@@ -87,7 +88,7 @@ run-single: single
 	$(LIBRARY_PATH_VAR)=$(LIBDIR) $(BINDIR)/test.out; \
 
 # Run multiple tests target
-run-multiple: all-multiple
+run-multiple: multiple
 	@for bin in $(addsuffix .out, $(addprefix $(BINDIR)/$(TARGET)/test_, $(TEST))); do \
 		bin_name=$$(basename $$bin | sed 's/^test_//' | sed 's/\.out$$//'); \
 		echo "\033[1;34mRunning test: $$bin_name\033[0m"; \
@@ -120,11 +121,11 @@ $(MOCKDIR)/%.o: $(MOCKDIR)/%.c
 	@$(CC) $(CFLAGS) -fPIC -c -o $@ $<
 	@echo "\033[0;32mCompiled: $<\033[0m"
 
-# Library target: creates the static library from object files
+# Library target: creates the libft library from object files
 $(LIBRARY): $(OBJS)
 	@mkdir -p $(LIBDIR)
 	@ar rcs $(LIBRARY) $(OBJS)
-	@echo "\033[1;32mBuild complete: static library\033[0m"
+	@echo "\033[1;32mBuild complete: libft library (lib$(patsubst lib%,%,$(TARGET)).a)\033[0m"
 
 # Rule to compile .c files in $(SRCDIR) to .o files
 $(SRCDIR)/%.o: $(SRCDIR)/%.c $(HEADER)
