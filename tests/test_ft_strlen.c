@@ -6,13 +6,46 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 11:34:16 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/17 14:30:43 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/17 15:08:21 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <signal.h>
+#include <string.h>
 #include "minunit.h"
 
 size_t	ft_strlen(const char *s);
+
+int	capture_segfault_ft_strlen(size_t (*f)(const char *), const char *s)
+{
+	pid_t pid = fork();
+	if (pid == 0)
+	{
+		// Child process executes the test
+		f(s);
+		exit(0);
+	}
+	else if (pid > 0)
+	{
+		// Parent process waits for the child
+		int status;
+		waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
+		{
+			return 1;
+		}
+		return 0;
+	}
+	else
+	{
+		perror("fork");
+		exit(1);
+	}
+}
 
 MU_TEST(test_ft_strlen_null_string)
 {
@@ -167,6 +200,17 @@ MU_TEST(test_ft_strlen_escape_chars)
 	mu_assert(expected_result == actual_result, message);
 }
 
+MU_TEST(test_ft_strlen_null_pointer)
+{
+	int		expected_result;
+	int		actual_result;
+
+	// ACT & ASSERT
+	actual_result = 1;
+	expected_result = capture_segfault_ft_strlen(&ft_strlen, NULL);
+	mu_assert(expected_result == actual_result, "Expected segmentation fault, but it did not occur.");
+}
+
 MU_TEST_SUITE(ft_strlen_test_suite)
 {
 	MU_RUN_TEST(test_ft_strlen_null_string);
@@ -179,6 +223,7 @@ MU_TEST_SUITE(ft_strlen_test_suite)
 	MU_RUN_TEST(test_ft_strlen_long_string);
 	MU_RUN_TEST(test_ft_strlen_multibyte_chars);
 	MU_RUN_TEST(test_ft_strlen_escape_chars);
+	MU_RUN_TEST(test_ft_strlen_null_pointer);
 }
 
 int	main(void) {
