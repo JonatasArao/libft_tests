@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 09:38:23 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/17 11:49:35 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/17 14:21:43 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,31 @@ MU_TEST(test_ft_strchr_f_in_forty_two)
 	}
 	expected_result = string;
 	actual_result = ft_strchr(string, 'f');
+	snprintf(message, sizeof(message), "Expected memory address %p but was %p\n", (void *)expected_result, (void *)actual_result);
+
+	// ASSERT
+	mu_assert(expected_result == actual_result, message);
+
+	// CLEANUP
+	free(string);
+}
+
+MU_TEST(test_ft_strchr_t_in_forty_two)
+{
+	// ARRANGE
+	char	*expected_result;
+	char	*actual_result;
+	char	*string;
+	char	message[50];
+
+	// ACT
+	string = strdup("forty two");
+	if (!string) {
+		mu_fail("Memory allocation failed");
+		return;
+	}
+	expected_result = &string[3];
+	actual_result = ft_strchr(string, 't');
 	snprintf(message, sizeof(message), "Expected memory address %p but was %p\n", (void *)expected_result, (void *)actual_result);
 
 	// ASSERT
@@ -235,6 +260,7 @@ MU_TEST(test_ft_strchr_null_pointer)
 MU_TEST_SUITE(ft_strchr_test_suite)
 {
 	MU_RUN_TEST(test_ft_strchr_f_in_forty_two);
+	MU_RUN_TEST(test_ft_strchr_t_in_forty_two);
 	MU_RUN_TEST(test_ft_strchr_o_in_forty_two);
 	MU_RUN_TEST(test_ft_strchr_null_char_in_forty_two);
 	MU_RUN_TEST(test_ft_strchr_char_y_above_255_in_forty_two);
