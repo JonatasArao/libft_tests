@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/16 17:43:35 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/16 20:16:59 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/17 09:04:17 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,13 @@ int capture_segfault_ft_strlcat(size_t (*f)(char *, const char *, size_t), char 
 MU_TEST(test_ft_strlcat_forty_two_assignment)
 {
 	// ARRANGE
-	char	expected_result[9];
-	char	actual_result[9];
+	char	expected_result[10];
+	char	actual_result[10];
 
 	// ACT
-	strcpy(expected_result, "Ecole 42");
-	strcpy(actual_result, "Ecole ");
-	ft_strlcat(actual_result, "42", 9);
+	strcpy(expected_result, "forty two");
+	strcpy(actual_result, "forty ");
+	ft_strlcat(actual_result, "two", 10);
 
 	// ASSERT
 	mu_assert_string_eq(expected_result, actual_result);
@@ -66,12 +66,12 @@ MU_TEST(test_ft_strlcat_forty_two_return)
 	// ARRANGE
 	int		expected_result;
 	int		actual_result;
-	char	buffer[9];
+	char	dst[10];
 
 	// ACT
-	expected_result = 8;
-	strcpy(buffer, "Ecole ");
-	actual_result = ft_strlcat(buffer, "42", 9);
+	expected_result = 9;
+	strcpy(dst, "forty ");
+	actual_result = ft_strlcat(dst, "two", 10);
 
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
@@ -97,12 +97,12 @@ MU_TEST(test_ft_strlcat_size_equal_zero_return)
 	// ARRANGE
 	int		expected_result;
 	int		actual_result;
-	char	buffer[7];
+	char	dst[7];
 
 	// ACT
 	expected_result = 2;
-	strcpy(buffer, "Ecole ");
-	actual_result = ft_strlcat(buffer, "42", 0);
+	strcpy(dst, "Ecole ");
+	actual_result = ft_strlcat(dst, "42", 0);
 
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
@@ -128,12 +128,74 @@ MU_TEST(test_ft_strlcat_size_larger_than_src_size_plus_dst_size_return)
 	// ARRANGE
 	int		expected_result;
 	int		actual_result;
-	char	buffer[20];
+	char	dst[20];
 
 	// ACT
 	expected_result = 8;
-	strcpy(buffer, "Ecole ");
-	actual_result = ft_strlcat(buffer, "42", 20);
+	strcpy(dst, "Ecole ");
+	actual_result = ft_strlcat(dst, "42", 20);
+
+	// ASSERT
+	mu_assert_int_eq(expected_result, actual_result);
+}
+
+MU_TEST(test_ft_strlcat_size_smaller_than_src_size_plus_dst_size_assignment)
+{
+	// ARRANGE
+	char	expected_result[10];
+	char	actual_result[10];
+
+	// ACT
+	strcpy(expected_result, "Ecole 42");
+	strcpy(actual_result, "Ecole ");
+	ft_strlcat(actual_result, "42 forty two", 9);
+
+	// ASSERT
+	mu_assert_string_eq(expected_result, actual_result);
+}
+
+MU_TEST(test_ft_strlcat_size_smaller_than_src_size_plus_dst_size_return)
+{
+	// ARRANGE
+	int		expected_result;
+	int		actual_result;
+	char	dst[10];
+
+	// ACT
+	expected_result = 18;
+	strcpy(dst, "Ecole ");
+	actual_result = ft_strlcat(dst, "42 forty two", 9);
+
+	// ASSERT
+	mu_assert_int_eq(expected_result, actual_result);
+}
+
+MU_TEST(test_ft_strlcat_size_equal_src_size_plus_dst_size_assignment)
+{
+	// ARRANGE
+	char	expected_result[10];
+	char	actual_result[10];
+
+	// ACT
+	strcpy(expected_result, "Ecole 4");
+	strcpy(actual_result, "Ecole ");
+	ft_strlcat(actual_result, "42", 8);
+
+	// ASSERT
+	mu_assert_string_eq(expected_result, actual_result);
+}
+
+MU_TEST(test_ft_strlcat_size_equal_src_size_plus_dst_size_return)
+{
+	// ARRANGE
+	int		expected_result;
+	int		actual_result;
+	char	dst[10];
+
+	// ACT
+	expected_result = 8;
+	strcpy(dst, "Ecole ");
+	actual_result = ft_strlcat(dst, "42", 8);
 
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
@@ -159,12 +221,12 @@ MU_TEST(test_ft_strlcat_size_smaller_than_dst_size_return)
 	// ARRANGE
 	int		expected_result;
 	int		actual_result;
-	char	buffer[7];
+	char	dst[7];
 
 	// ACT
 	expected_result = 4;
-	strcpy(buffer, "Ecole ");
-	actual_result = ft_strlcat(buffer, "42", 2);
+	strcpy(dst, "Ecole ");
+	actual_result = ft_strlcat(dst, "42", 2);
 
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
@@ -190,12 +252,12 @@ MU_TEST(test_ft_strlcat_size_equal_dst_size_return)
 	// ARRANGE
 	int		expected_result;
 	int		actual_result;
-	char	buffer[9];
+	char	dst[9];
 
 	// ACT
 	expected_result = 8;
-	strcpy(buffer, "Ecole ");
-	actual_result = ft_strlcat(buffer, "42", 6);
+	strcpy(dst, "Ecole ");
+	actual_result = ft_strlcat(dst, "42", 6);
 
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
@@ -221,12 +283,41 @@ MU_TEST(test_ft_strlcat_empty_src_return)
 	// ARRANGE
 	int		expected_result;
 	int		actual_result;
-	char	buffer[9];
+	char	dst[9];
 
 	// ACT
 	expected_result = 8;
-	strcpy(buffer, "Ecole 42");
-	actual_result = ft_strlcat(buffer, "", 9);
+	strcpy(dst, "Ecole 42");
+	actual_result = ft_strlcat(dst, "", 9);
+
+	// ASSERT
+	mu_assert_int_eq(expected_result, actual_result);
+}
+
+MU_TEST(test_ft_strlcat_empty_dst_assignment)
+{
+	// ARRANGE
+	char	expected_result[9];
+	char	actual_result[9];
+
+	// ACT
+	strcpy(expected_result, "Ecole 42");
+	ft_strlcat(actual_result, "Ecole 42", 9);
+
+	// ASSERT
+	mu_assert_string_eq(expected_result, actual_result);
+}
+
+MU_TEST(test_ft_strlcat_empty_dst_return)
+{
+	// ARRANGE
+	int		expected_result;
+	int		actual_result;
+	char	dst[9];
+
+	// ACT
+	expected_result = 8;
+	actual_result = ft_strlcat(dst, "Ecole 42", 9);
 
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
@@ -252,12 +343,12 @@ MU_TEST(test_ft_strlcat_empty_src_and_dst_return)
 	// ARRANGE
 	int		expected_result;
 	int		actual_result;
-	char	buffer[1];
+	char	dst[1];
 
 	// ACT
 	expected_result = 0;
-	strcpy(buffer, "");
-	actual_result = ft_strlcat(buffer, "", 1);
+	strcpy(dst, "");
+	actual_result = ft_strlcat(dst, "", 1);
 
 	// ASSERT
 	mu_assert_int_eq(expected_result, actual_result);
@@ -294,12 +385,18 @@ MU_TEST_SUITE(ft_strlcat_test_suite)
 	MU_RUN_TEST(test_ft_strlcat_size_equal_zero_return);
 	MU_RUN_TEST(test_ft_strlcat_size_larger_than_src_size_plus_dst_size_assignment);
 	MU_RUN_TEST(test_ft_strlcat_size_larger_than_src_size_plus_dst_size_return);
+	MU_RUN_TEST(test_ft_strlcat_size_smaller_than_src_size_plus_dst_size_assignment);
+	MU_RUN_TEST(test_ft_strlcat_size_smaller_than_src_size_plus_dst_size_return);
+	MU_RUN_TEST(test_ft_strlcat_size_equal_src_size_plus_dst_size_assignment);
+	MU_RUN_TEST(test_ft_strlcat_size_equal_src_size_plus_dst_size_return);
 	MU_RUN_TEST(test_ft_strlcat_size_smaller_than_dst_size_assignment);
 	MU_RUN_TEST(test_ft_strlcat_size_smaller_than_dst_size_return);
 	MU_RUN_TEST(test_ft_strlcat_size_equal_dst_size_assignment);
 	MU_RUN_TEST(test_ft_strlcat_size_equal_dst_size_return);
 	MU_RUN_TEST(test_ft_strlcat_empty_src_assignment);
 	MU_RUN_TEST(test_ft_strlcat_empty_src_return);
+	MU_RUN_TEST(test_ft_strlcat_empty_dst_assignment);
+	MU_RUN_TEST(test_ft_strlcat_empty_dst_return);
 	MU_RUN_TEST(test_ft_strlcat_empty_src_and_dst_assignment);
 	MU_RUN_TEST(test_ft_strlcat_empty_src_and_dst_return);
 	MU_RUN_TEST(test_ft_strlcat_null_src);
