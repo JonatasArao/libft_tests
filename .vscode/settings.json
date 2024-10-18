@@ -14,6 +14,10 @@
 		"initializer_list": "c",
 		"ranges": "c",
 		"utility": "c",
-		"string.h": "c"
+		"string.h": "c",
+		"string": "c",
+		"system_error": "c",
+		"*.tcc": "cpp",
+		"types.h": "c"
 	}
 }
