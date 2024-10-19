@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 15:14:15 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/19 19:37:30 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/19 19:43:01 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ MU_TEST(test_ft_calloc_nmeb_zero)
 	actual_result = ft_calloc(0, 1);
 
 	// ASSERT
-	mu_assert(actual_result != NULL, "Expected non-NULL pointer for nmemb = 0");
+	mu_assert(actual_result != NULL, "Expected non-NULL pointer");
 
 	// CLEANUP
 	free(actual_result);
@@ -46,7 +46,7 @@ MU_TEST(test_ft_calloc_size_zero)
 	actual_result = ft_calloc(1, 0);
 
 	// ASSERT
-	mu_assert(actual_result != NULL, "Expected non-NULL pointer for size = 0");
+	mu_assert(actual_result != NULL, "Expected non-NULL pointer");
 
 	// CLEANUP
 	free(actual_result);
@@ -58,10 +58,10 @@ MU_TEST(test_ft_calloc_nmeb_zero_size_zero)
 	char	*actual_result;
 
 	// ACT
-	actual_result = ft_calloc(1, 0);
+	actual_result = ft_calloc(0, 0);
 
 	// ASSERT
-	mu_assert(actual_result != NULL, "Expected non-NULL pointer for size = 0");
+	mu_assert(actual_result != NULL, "Expected non-NULL pointer");
 
 	// CLEANUP
 	free(actual_result);
