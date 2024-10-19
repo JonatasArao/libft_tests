@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 10:17:33 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/16 11:17:34 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/19 18:28:56 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ void* malloc(size_t size) {
 	}
 
 	if (mock_malloc_active) {
-		void *tmp = original_malloc(size);
+		void *tmp = original_malloc(size + 1);
 		if (tmp != NULL) {
-			memset(tmp, 0xFF, size);
+			memset(tmp, 0xFF, size + 1);
 		}
 		return tmp;
 	} else {
