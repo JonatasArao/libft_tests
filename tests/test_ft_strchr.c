@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 09:38:23 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/17 14:21:43 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/21 10:20:40 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,7 +236,7 @@ MU_TEST(test_ft_strchr_empty_string)
 		return;
 	}
 	expected_result = NULL;
-	actual_result = ft_strchr(string, '4');
+	actual_result = ft_strchr(string, ' ');
 	snprintf(message, sizeof(message), "Expected memory address %p but was %p\n", (void *)expected_result, (void *)actual_result);
 
 	// ASSERT
