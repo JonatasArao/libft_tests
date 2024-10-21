@@ -61,7 +61,8 @@ FUNC		=	ft_isalpha \
 				ft_calloc \
 				ft_memcpy \
 				ft_memchr \
-				ft_memcmp
+				ft_memcmp \
+				ft_memmove
 EXIST_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
 MISS_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
 LIBRARY		=	$(LIBDIR)/lib$(patsubst lib%,%,$(TARGET)).a
