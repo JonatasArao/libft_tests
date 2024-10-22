@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/14 16:31:05 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/16 17:35:10 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/22 17:13:53 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@
 
 char	*ft_strdup(const char *src);
 
-extern int mock_malloc_active;
+extern int mock_malloc_memset_active;
+
+extern int mock_malloc_failure_active;
 
 int capture_segfault_ft_strdup(char *(*f)(const char *), const char *src)
 {
@@ -78,7 +80,10 @@ MU_TEST(test_ft_strdup_forty_two)
 	actual_result = ft_strdup("42");
 
 	// ASSERT
-	mu_assert_string_eq(expected_result, actual_result);
+	if (actual_result[3] == (char) 0xFF)
+		mu_assert_string_eq(expected_result, actual_result);
+	else
+		mu_fail("Incorrect allocation size. Expected was 3 bytes");
 
 	// CLEANUP
 	free(actual_result);
@@ -95,7 +100,10 @@ MU_TEST(test_ft_strdup_empty_string)
 	actual_result = ft_strdup("");
 
 	// ASSERT
-	mu_assert_string_eq(expected_result, actual_result);
+	if (actual_result[1] == (char) 0xFF)
+		mu_assert_string_eq(expected_result, actual_result);
+	else
+		mu_fail("Incorrect allocation size. Expected was 1 byte");
 
 	// CLEANUP
 	free(actual_result);
@@ -112,7 +120,10 @@ MU_TEST(test_ft_strdup_null_char_in_middle)
 	actual_result = ft_strdup("String\0with null");
 
 	// ASSERT
-	mu_assert_string_eq(expected_result, actual_result);
+	if (actual_result[7] == (char) 0xFF)
+		mu_assert_string_eq(expected_result, actual_result);
+	else
+		mu_fail("Incorrect allocation size. Expected was 7 bytes");
 
 	// CLEANUP
 	free(actual_result);
@@ -129,7 +140,10 @@ MU_TEST(test_ft_strdup_long_string)
 	actual_result = ft_strdup("This is a very long string to test the ft_strdup function.");
 
 	// ASSERT
-	mu_assert_string_eq(expected_result, actual_result);
+	if (actual_result[59] == (char) 0xFF)
+		mu_assert_string_eq(expected_result, actual_result);
+	else
+		mu_fail("Incorrect allocation size. Expected was 59 bytes");
 
 	// CLEANUP
 	free(actual_result);
@@ -146,7 +160,10 @@ MU_TEST(test_ft_strdup_special_characters)
 	actual_result = ft_strdup("Hello\n\t!");
 
 	// ASSERT
-	mu_assert_string_eq(expected_result, actual_result);
+	if (actual_result[9] == (char) 0xFF)
+		mu_assert_string_eq(expected_result, actual_result);
+	else
+		mu_fail("Incorrect allocation size. Expected was 9 bytes");
 
 	// CLEANUP
 	free(actual_result);
@@ -163,7 +180,10 @@ MU_TEST(test_ft_strdup_spaces)
 	actual_result = ft_strdup("   ");
 
 	// ASSERT
-	mu_assert_string_eq(expected_result, actual_result);
+	if (actual_result[4] == (char) 0xFF)
+		mu_assert_string_eq(expected_result, actual_result);
+	else
+		mu_fail("Incorrect allocation size. Expected was 4 bytes");
 
 	// CLEANUP
 	free(actual_result);
@@ -180,7 +200,10 @@ MU_TEST(test_ft_strdup_unicode_string)
 	actual_result = ft_strdup("こんにちは");
 
 	// ASSERT
-	mu_assert_string_eq(expected_result, actual_result);
+	if (actual_result[16] == (char) 0xFF)
+		mu_assert_string_eq(expected_result, actual_result);
+	else
+		mu_fail("Incorrect allocation size. Expected was 16 bytes");
 
 	// CLEANUP
 	free(actual_result);
@@ -197,7 +220,10 @@ MU_TEST(test_ft_strdup_escape_characters)
 	actual_result = ft_strdup("Hello\nWorld\t!");
 
 	// ASSERT
-	mu_assert_string_eq(expected_result, actual_result);
+	if (actual_result[14] == (char) 0xFF)
+		mu_assert_string_eq(expected_result, actual_result);
+	else
+		mu_fail("Incorrect allocation size. Expected was 14 bytes");
 
 	// CLEANUP
 	free(actual_result);
@@ -215,7 +241,10 @@ MU_TEST(test_ft_strdup_very_long_string)
 	actual_result = ft_strdup(expected_result);
 
 	// ASSERT
-	mu_assert_string_eq(expected_result, actual_result);
+	if (actual_result[10000] == (char) 0xFF)
+		mu_assert_string_eq(expected_result, actual_result);
+	else
+		mu_fail("Incorrect allocation size. Expected was 10000 bytes");
 
 	// CLEANUP
 	free(actual_result);
@@ -232,6 +261,31 @@ MU_TEST(test_ft_strdup_null_pointer)
 	mu_assert(expected_result == actual_result, "Expected segmentation fault, but it did not occur.");
 }
 
+MU_TEST(test_ft_strdup_malloc_fail)
+{
+	// ARRANGE
+	void	*expected_result;
+	void	*actual_result;
+	int		segfaulted;
+
+	// ACT
+	expected_result = NULL;
+	mock_malloc_failure_active = 1;
+	segfaulted = capture_segfault_ft_strdup(&ft_strdup, "42");
+	if (!segfaulted)
+		actual_result = ft_strdup("42");
+	mock_malloc_failure_active = 0;
+
+	// ASSERT
+	if (!segfaulted)
+	{
+		mu_assert(actual_result == expected_result, "Expected NULL pointer");
+		free(actual_result);
+	}
+	else
+		mu_fail("Function should not cause a segmentation fault.");
+}
+
 MU_TEST_SUITE(ft_strdup_test_suite)
 {
 	MU_RUN_TEST(test_ft_strdup_is_null_terminated);
@@ -243,14 +297,15 @@ MU_TEST_SUITE(ft_strdup_test_suite)
 	MU_RUN_TEST(test_ft_strdup_spaces);
 	MU_RUN_TEST(test_ft_strdup_unicode_string);
 	MU_RUN_TEST(test_ft_strdup_escape_characters);
-	MU_RUN_TEST(test_ft_strdup_very_long_string);;
+	MU_RUN_TEST(test_ft_strdup_very_long_string);
 	MU_RUN_TEST(test_ft_strdup_null_pointer);
+	MU_RUN_TEST(test_ft_strdup_malloc_fail);
 }
 
 int	main(void) {
-	mock_malloc_active = 1;
+	mock_malloc_memset_active = 1;
 	MU_RUN_SUITE(ft_strdup_test_suite);
 	MU_REPORT();
-	mock_malloc_active = 0;
+	mock_malloc_memset_active = 0;
 	return MU_EXIT_CODE;
 }

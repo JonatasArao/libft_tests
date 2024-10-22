@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 15:14:15 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/19 19:43:01 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/22 17:19:48 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,36 @@
 
 void	*ft_calloc(size_t nmemb, size_t size);
 
-extern int mock_malloc_active;
+extern int mock_malloc_memset_active;
+
+extern int mock_malloc_failure_active;
+
+int capture_segfault_ft_calloc(void *(*f)(size_t, size_t), size_t nmemb, size_t size)
+{
+	pid_t pid = fork();
+	if (pid == 0)
+	{
+		// Child process executes the test
+		f(nmemb, size);
+		exit(0);
+	}
+	else if (pid > 0)
+	{
+		// Parent process waits for the child
+		int status;
+		waitpid(pid, &status, 0);
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
+		{
+			return 1;
+		}
+		return 0;
+	}
+	else
+	{
+		perror("fork");
+		exit(1);
+	}
+}
 
 MU_TEST(test_ft_calloc_nmeb_zero)
 {
@@ -284,6 +313,31 @@ MU_TEST(test_ft_calloc_nmeb_forty_two_size_forty_two)
 	free(expected_result);
 }
 
+MU_TEST(test_ft_calloc_malloc_fail)
+{
+	// ARRANGE
+	void	*expected_result;
+	void	*actual_result;
+	int		segfaulted;
+
+	// ACT
+	expected_result = NULL;
+	mock_malloc_failure_active = 1;
+	segfaulted = capture_segfault_ft_calloc(&ft_calloc, 1, 1);
+	if (!segfaulted)
+		actual_result = ft_calloc(1, 1);
+	mock_malloc_failure_active = 0;
+
+	// ASSERT
+	if (!segfaulted)
+	{
+		mu_assert(actual_result == expected_result, "Expected NULL pointer");
+		free(actual_result);
+	}
+	else
+		mu_fail("Function should not cause a segmentation fault.");
+}
+
 MU_TEST_SUITE(ft_calloc_test_suite)
 {
 	MU_RUN_TEST(test_ft_calloc_nmeb_zero);
@@ -296,12 +350,13 @@ MU_TEST_SUITE(ft_calloc_test_suite)
 	MU_RUN_TEST(test_ft_calloc_nmeb_two_size_four);
 	MU_RUN_TEST(test_ft_calloc_nmeb_four_size_two);
 	MU_RUN_TEST(test_ft_calloc_nmeb_forty_two_size_forty_two);
+	MU_RUN_TEST(test_ft_calloc_malloc_fail);
 }
 
 int	main(void) {
-	mock_malloc_active = 1;
+	mock_malloc_memset_active = 1;
 	MU_RUN_SUITE(ft_calloc_test_suite);
-	mock_malloc_active = 0;
+	mock_malloc_memset_active = 0;
 	MU_REPORT();
 	return MU_EXIT_CODE;
 }
