@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 11:42:11 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/22 15:44:07 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/22 17:23:04 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@
 
 char	*ft_substr(char const *s, unsigned int start, size_t len);
 
-extern int mock_malloc_active;
+extern int mock_malloc_memset_active;
+
+extern int mock_malloc_failure_active;
 
 int capture_segfault_ft_substr(char *(*f)(const char *, unsigned int, size_t), char const *s, unsigned int start, size_t len)
 {
@@ -61,7 +63,7 @@ MU_TEST(test_ft_substr_is_null_terminated)
 	}
 
 	// ASSERT
-	mu_assert(actual_result[strlen(actual_result)] == '\0', "Expected the duplicated string to be null-terminated");
+	mu_assert(actual_result[2] == '\0', "Expected the duplicated string to be null-terminated");
 
 	// CLEANUP
 	free(actual_result);
@@ -230,7 +232,7 @@ MU_TEST(test_ft_substr_forty_two_school_start_20_len_5)
 	free(actual_result);
 }
 
-MU_TEST(test_ft_substr_null_point)
+MU_TEST(test_ft_substr_null_pointer)
 {
 	int		expected_result;
 	int		actual_result;
@@ -239,6 +241,31 @@ MU_TEST(test_ft_substr_null_point)
 	actual_result = 1;
 	expected_result = capture_segfault_ft_substr(&ft_substr, NULL, 0, 1);
 	mu_assert(expected_result == actual_result, "Expected segmentation fault, but it did not occur.");
+}
+
+MU_TEST(test_ft_substr_malloc_fail)
+{
+	// ARRANGE
+	void	*expected_result;
+	void	*actual_result;
+	int		segfaulted;
+
+	// ACT
+	expected_result = NULL;
+	mock_malloc_failure_active = 1;
+	segfaulted = capture_segfault_ft_substr(&ft_substr, "42", 0, 2);
+	if (!segfaulted)
+		actual_result = ft_substr("42", 0, 2);
+	mock_malloc_failure_active = 0;
+
+	// ASSERT
+	if (!segfaulted)
+	{
+		mu_assert(actual_result == expected_result, "Expected NULL pointer");
+		free(actual_result);
+	}
+	else
+		mu_fail("Function should not cause a segmentation fault.");
 }
 
 MU_TEST_SUITE(ft_substr_test_suite)
@@ -250,13 +277,14 @@ MU_TEST_SUITE(ft_substr_test_suite)
 	MU_RUN_TEST(test_ft_substr_forty_two_school_start_6_len_3);
 	MU_RUN_TEST(test_ft_substr_forty_two_school_start_10_len_6);
 	MU_RUN_TEST(test_ft_substr_forty_two_school_start_20_len_5);
-	MU_RUN_TEST(test_ft_substr_null_point);
+	MU_RUN_TEST(test_ft_substr_null_pointer);
+	MU_RUN_TEST(test_ft_substr_malloc_fail);
 }
 
 int	main(void) {
-	mock_malloc_active = 1;
+	mock_malloc_memset_active = 1;
 	MU_RUN_SUITE(ft_substr_test_suite);
 	MU_REPORT();
-	mock_malloc_active = 0;
+	mock_malloc_memset_active = 0;
 	return MU_EXIT_CODE;
 }
