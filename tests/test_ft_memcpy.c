@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/21 08:54:33 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/21 09:49:16 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/22 16:48:28 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,10 +254,6 @@ MU_TEST(test_ft_memcpy_null_dst_null_src)
 		mu_fail("Function should not cause a segmentation fault.");
 	else
 		mu_assert(actual_result == expected_result, "Expected NULL pointer");
-
-	// CLEANUP
-	free(expected_result);
-	free(dest);
 }
 
 MU_TEST_SUITE(ft_memcpy_test_suite)
