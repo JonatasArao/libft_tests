@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/22 11:42:11 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/22 17:23:04 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/23 17:08:44 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ MU_TEST(test_ft_substr_forty_two_school_start_0_len_20)
 		mu_fail("Memory allocation failed");
 		return;
 	}
-	if (memcmp(&actual_result[17], "\xFF\xFF\xFF\xFF", 4) != 0)
+	if (memcmp(&actual_result[17], "\xFF\xFF", 2) != 0)
 		mu_assert_string_eq(expected_result, actual_result);
 	else
 		mu_fail("Allocation size is larger than expected for the substring");
