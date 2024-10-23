@@ -70,7 +70,8 @@ FUNC		=	ft_isalpha \
 				ft_substr \
 				ft_strjoin \
 				ft_strtrim \
-				ft_striteri
+				ft_striteri \
+				ft_strmapi
 EXIST_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
 MISS_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
 LIBRARY		=	$(LIBDIR)/lib$(patsubst lib%,%,$(TARGET)).a
