@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 13:27:15 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/23 14:08:52 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/23 14:55:05 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,10 @@ MU_TEST(test_ft_striteri_one_char_string)
 
 	// ASSERT
 	mu_assert_string_eq(expected_result, actual_result);
+
+	// CLEANUP
+	free(expected_result);
+	free(actual_result);
 }
 
 MU_TEST(test_ft_striteri_string)
@@ -87,6 +91,10 @@ MU_TEST(test_ft_striteri_string)
 
 	// ASSERT
 	mu_assert_string_eq(expected_result, actual_result);
+
+	// CLEANUP
+	free(expected_result);
+	free(actual_result);
 }
 
 MU_TEST(test_ft_striteri_empty_string)
@@ -102,6 +110,10 @@ MU_TEST(test_ft_striteri_empty_string)
 
 	// ASSERT
 	mu_assert_string_eq(expected_result, actual_result);
+
+	// CLEANUP
+	free(expected_result);
+	free(actual_result);
 }
 
 MU_TEST(test_ft_striteri_s1_null)
