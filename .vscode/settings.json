@@ -18,6 +18,8 @@
 		"string": "c",
 		"system_error": "c",
 		"*.tcc": "cpp",
-		"types.h": "c"
+		"types.h": "c",
+		"algorithm": "c",
+		"dlfcn.h": "c"
 	}
 }
