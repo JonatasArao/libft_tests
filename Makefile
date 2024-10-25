@@ -74,14 +74,19 @@ FUNC		=	ft_isalpha \
 				ft_strmapi \
 				ft_itoa \
 				ft_split
+BONUS_FUNC	=	ft_lstnew
 EXIST_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
 MISS_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
+EXIST_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
+MISS_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
 LIBRARY		=	$(LIBDIR)/lib$(patsubst lib%,%,$(TARGET)).a
 INC			=	$(addprefix -I, $(INCDIR))
 HEADER		=	$(INCDIR)/libft.h
 SRCS		=	$(addsuffix .c, $(addprefix $(SRCDIR)/, $(EXIST_FUNC)))
 OBJS		=	$(SRCS:.c=.o)
-TEST		=	$(EXIST_FUNC)
+BONUS_SRCS	=	$(addsuffix .c, $(addprefix $(SRCDIR)/, $(EXIST_BONUS)))
+BONUS_OBJS	=	$(BONUS_SRCS:.c=.o)
+TEST		=	$(EXIST_FUNC) $(EXIST_BONUS)
 TESTS_SRCS	=	$(addsuffix .c, $(addprefix $(TESTDIR)/test_, $(TEST)))
 TEST_OBJS	=	$(TESTS_SRCS:.c=.o)
 
@@ -90,9 +95,19 @@ TEST_OBJS	=	$(TESTS_SRCS:.c=.o)
 
 # Default target: builds the library and all tests
 all: $(if $(filter 1,$(words $(TEST))),single,multiple)
-	@echo "\033[1;35mAvailable functions: $(patsubst '\t'%,%,$(EXIST_FUNC))\033[0m"
-	@if [ $(MISS_FUNC) ]; then \
-		echo "\033[1;31mMissing functions: $(patsubst '\t'%,%,$(MISS_FUNC))\033[0m"; \
+	@echo "\033[1;35mAvailable functions:\033[0m"
+	@echo "\033[0;37m$(EXIST_FUNC)\033[0m" | xargs -n 6 | column -t
+	@if [ "$(filter $(FUNC),$(MISS_FUNC))" ]; then \
+		echo "\033[1;31mMissing functions:\033[0m"; \
+		echo "\033[0;31m$(MISS_FUNC)\033[0m" | xargs -n 6 | column -t; \
+	fi
+	@if [ "$(filter $(BONUS_FUNC),$(EXIST_BONUS))" ]; then \
+		echo "\033[1;35mAvailable bonus functions:\033[0m"; \
+		echo "\033[0;37m$(EXIST_BONUS)\033[0m" | xargs -n 6 | column -t; \
+		if [ "$(filter $(BONUS_FUNC),$(MISS_BONUS))" ]; then \
+			echo "\033[1;31mMissing bonus functions:\033[0m"; \
+			echo "\033[0;31m$(MISS_BONUS)\033[0m" | xargs -n 6 | column -t; \
+		fi \
 	fi
 
 # Single function build: builds the library and a single test executable
@@ -146,9 +161,9 @@ $(MOCKDIR)/%.o: $(MOCKDIR)/%.c
 	@echo "\033[0;32mCompiled: $<\033[0m"
 
 # Library target: creates the libft library from object files
-$(LIBRARY): $(OBJS)
+$(LIBRARY): $(OBJS) $(BONUS_OBJS)
 	@mkdir -p $(LIBDIR)
-	@ar rcs $(LIBRARY) $(OBJS)
+	@ar rcs $(LIBRARY) $(OBJS) $(BONUS_OBJS)
 	@echo "\033[1;32mBuild complete: libft library (lib$(patsubst lib%,%,$(TARGET)).a)\033[0m"
 
 # Rule to compile .c files in $(SRCDIR) to .o files
@@ -168,14 +183,14 @@ $(BINDIR)/$(TARGET)/test_%.out: $(TESTDIR)/test_%.o $(SRCDIR)/%.o
 	@echo "\033[1;32mBuild complete: $@\033[0m"
 
 # Build target to debug a selected test: compiles and links a single test debug executable
-$(BINDIR)/test.out: $(TEST_OBJS) $(OBJS)
+$(BINDIR)/test.out: $(TEST_OBJS) $(OBJS) $(BONUS_OBJS)
 	@mkdir -p $(BINDIR)
 	@$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
 	@echo "\033[1;32mBuild complete: test.out\033[0m"
 
 # Clean target
 clean:
-	@$(RM) $(OBJS) $(TEST_OBJS) $(MOCK_OBJS)
+	@$(RM) $(OBJS) $(BONUS_OBJS) $(TEST_OBJS) $(MOCK_OBJS)
 	@echo "\033[1;36mClean complete\033[0m"
 
 # Full clean target
