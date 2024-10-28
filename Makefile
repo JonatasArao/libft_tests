@@ -77,7 +77,8 @@ FUNC		=	ft_isalpha \
 BONUS_FUNC	=	ft_lstnew \
 				ft_lstadd_front \
 				ft_lstsize \
-				ft_lstlast
+				ft_lstlast \
+				ft_lstadd_back
 EXIST_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
 MISS_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
 EXIST_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
@@ -136,6 +137,16 @@ run-multiple: multiple
 		echo "\033[1;34mRunning test: $$bin_name\033[0m"; \
 		$(LIBRARY_PATH_VAR)=$(LIBDIR) $$bin; \
 	done
+	@if [ "$(filter $(FUNC),$(MISS_FUNC))" ]; then \
+		echo "\033[1;31mMissing functions:\033[0m"; \
+		echo "\033[0;31m$(MISS_FUNC)\033[0m" | xargs -n 6 | column -t; \
+	fi
+	@if [ "$(filter $(BONUS_FUNC),$(EXIST_BONUS))" ]; then \
+		if [ "$(filter $(BONUS_FUNC),$(MISS_BONUS))" ]; then \
+			echo "\033[1;31mMissing bonus functions:\033[0m"; \
+			echo "\033[0;31m$(MISS_BONUS)\033[0m" | xargs -n 6 | column -t; \
+		fi \
+	fi
 
 # Debug target: debugs the appropriate tests based on the number of tests
 debug: $(if $(filter 1,$(words $(TEST))),debug-single,debug-multiple)
@@ -152,6 +163,16 @@ debug-multiple: all
 		echo "\033[1;35mDebugging test: $$bin_name\033[0m"; \
 		$(LIBRARY_PATH_VAR)=$(LIBDIR) gdb --args $$bin; \
 	done
+	@if [ "$(filter $(FUNC),$(MISS_FUNC))" ]; then \
+		echo "\033[1;31mMissing functions:\033[0m"; \
+		echo "\033[0;31m$(MISS_FUNC)\033[0m" | xargs -n 6 | column -t; \
+	fi
+	@if [ "$(filter $(BONUS_FUNC),$(EXIST_BONUS))" ]; then \
+		if [ "$(filter $(BONUS_FUNC),$(MISS_BONUS))" ]; then \
+			echo "\033[1;31mMissing bonus functions:\033[0m"; \
+			echo "\033[0;31m$(MISS_BONUS)\033[0m" | xargs -n 6 | column -t; \
+		fi \
+	fi
 
 # Compile the shared library for mocks
 $(MOCKLIB): $(MOCK_OBJS)
