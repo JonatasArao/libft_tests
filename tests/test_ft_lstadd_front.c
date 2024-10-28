@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/25 16:35:57 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/28 14:02:46 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/28 15:57:00 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,9 @@ int capture_segfault_ft_lstadd_front(void (*f)(t_list **, t_list *), t_list **ls
 	}
 }
 
-MU_TEST(test_ft_lstadd_null_list)
+MU_TEST(test_ft_lstadd_front_null_list)
 {
 	// ARRANGE
-	t_list	*expected_result;
 	t_list	*actual_result;
 	t_list	new_list;
 	int		new_list_value;
@@ -65,19 +64,17 @@ MU_TEST(test_ft_lstadd_null_list)
 	new_list_value = 42;
 	new_list.content = &new_list_value;
 	new_list.next = NULL;
-	expected_result = &new_list;
 	ft_lstadd_front(&actual_result, &new_list);
 
 	// ASSERT
-	mu_assert(actual_result == expected_result, "The new node should be the head of the list");
-	mu_assert(actual_result->content == expected_result->content, "The content of the new node should be correct");
+	mu_assert(actual_result == &new_list, "The new node should be the head of the list");
+	mu_assert(actual_result->content == &new_list_value, "The content of the new node should be correct");
 	mu_assert(actual_result->next == NULL, "The next of the new node should be NULL");
 }
 
-MU_TEST(test_ft_lstadd_existing_list)
+MU_TEST(test_ft_lstadd_front_existing_list)
 {
 	// ARRANGE
-	t_list	*expected_result;
 	t_list	*actual_result;
 	t_list	existing_node;
 	t_list	new_node;
@@ -92,21 +89,18 @@ MU_TEST(test_ft_lstadd_existing_list)
 	new_value = 42;
 	new_node.content = &new_value;
 	new_node.next = NULL;
-	expected_result = &new_node;
-	expected_result->next = &existing_node;
 	ft_lstadd_front(&actual_result, &new_node);
 
 	// ASSERT
-	mu_assert(actual_result == expected_result, "The new node should be the head of the list");
-	mu_assert(actual_result->content == expected_result->content, "The content of the new node should be correct");
+	mu_assert(actual_result == &new_node, "The new node should be the head of the list");
+	mu_assert(actual_result->content == &new_value, "The content of the new node should be correct");
 	mu_assert(actual_result->next == &existing_node, "The next of the new node should point to the existing node");
 	mu_assert(actual_result->next->content == &existing_value, "The content of the existing node should be correct");
 }
 
-MU_TEST(test_ft_lstadd_multiple_nodes)
+MU_TEST(test_ft_lstadd_front_multiple_nodes)
 {
 	// ARRANGE
-	t_list	*expected_result;
 	t_list	*actual_result;
 	t_list	first_node;
 	t_list	second_node;
@@ -126,13 +120,11 @@ MU_TEST(test_ft_lstadd_multiple_nodes)
 	new_value = 42;
 	new_node.content = &new_value;
 	new_node.next = NULL;
-	expected_result = &new_node;
-	expected_result->next = &second_node;
 	ft_lstadd_front(&actual_result, &new_node);
 
 	// ASSERT
-	mu_assert(actual_result == expected_result, "The new node should be the head of the list");
-	mu_assert(actual_result->content == expected_result->content, "The content of the new node should be correct");
+	mu_assert(actual_result == &new_node, "The new node should be the head of the list");
+	mu_assert(actual_result->content == &new_value, "The content of the new node should be correct");
 	mu_assert(actual_result->next == &second_node, "The next of the new node should point to the second node");
 	mu_assert(actual_result->next->content == &second_value, "The content of the second node should be correct");
 	mu_assert(actual_result->next->next == &first_node, "The next of the second node should point to the first node");
@@ -143,7 +135,6 @@ MU_TEST(test_ft_lstadd_multiple_nodes)
 MU_TEST(test_ft_lstadd_front_with_null_content)
 {
 	// ARRANGE
-	t_list	*expected_result;
 	t_list	*actual_result;
 	t_list	existing_node;
 	t_list	new_node;
@@ -156,22 +147,19 @@ MU_TEST(test_ft_lstadd_front_with_null_content)
 	actual_result = &existing_node;
 	new_node.content = NULL;
 	new_node.next = NULL;
-	expected_result = &new_node;
-	expected_result->next = &existing_node;
 	ft_lstadd_front(&actual_result, &new_node);
 
 	// ASSERT
-	mu_assert(actual_result == expected_result, "The new node should be the head of the list");
+	mu_assert(actual_result == &new_node, "The new node should be the head of the list");
 	mu_assert(actual_result->content == NULL, "The content of the new node should be NULL");
 	mu_assert(actual_result->next == &existing_node, "The next of the new node should point to the existing node");
 	mu_assert(actual_result->next->content == &existing_value, "The content of the existing node should be correct");
 	mu_assert(actual_result->next->next == NULL, "The next of the existing node should be NULL");
 }
 
-MU_TEST(test_ft_lstadd_null_new_node)
+MU_TEST(test_ft_lstadd_front_null_new_node)
 {
 	// ARRANGE
-	t_list	*expected_result;
 	t_list	*actual_result;
 	t_list	existing_node;
 	int		existing_value;
@@ -182,7 +170,6 @@ MU_TEST(test_ft_lstadd_null_new_node)
 	existing_node.content = &existing_value;
 	existing_node.next = NULL;
 	actual_result = &existing_node;
-	expected_result = &existing_node;
 	segfaulted = capture_segfault_ft_lstadd_front(&ft_lstadd_front, &actual_result, NULL);
 	if (!segfaulted)
 		ft_lstadd_front(&actual_result, NULL);
@@ -190,8 +177,8 @@ MU_TEST(test_ft_lstadd_null_new_node)
 	// ASSERT
 	if (!segfaulted)
 	{
-		mu_assert(actual_result == expected_result, "The list should remain unchanged when new node is NULL");
-		mu_assert(actual_result->content == expected_result->content, "The content of the existing node should be correct");
+		mu_assert(actual_result == &existing_node, "The list should remain unchanged when new node is NULL");
+		mu_assert(actual_result->content == &existing_value, "The content of the existing node should be correct");
 		mu_assert(actual_result->next == NULL, "The next of the existing node should be NULL");
 	}
 	else
@@ -200,11 +187,11 @@ MU_TEST(test_ft_lstadd_null_new_node)
 
 MU_TEST_SUITE(ft_lstadd_front_test_suite)
 {
-	MU_RUN_TEST(test_ft_lstadd_null_list);
-	MU_RUN_TEST(test_ft_lstadd_existing_list);
-	MU_RUN_TEST(test_ft_lstadd_multiple_nodes);
+	MU_RUN_TEST(test_ft_lstadd_front_null_list);
+	MU_RUN_TEST(test_ft_lstadd_front_existing_list);
+	MU_RUN_TEST(test_ft_lstadd_front_multiple_nodes);
 	MU_RUN_TEST(test_ft_lstadd_front_with_null_content);
-	MU_RUN_TEST(test_ft_lstadd_null_new_node);
+	MU_RUN_TEST(test_ft_lstadd_front_null_new_node);
 }
 
 int	main(void) {
