@@ -75,7 +75,8 @@ FUNC		=	ft_isalpha \
 				ft_itoa \
 				ft_split
 BONUS_FUNC	=	ft_lstnew \
-				ft_lstadd_front
+				ft_lstadd_front \
+				ft_lstsize
 EXIST_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
 MISS_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
 EXIST_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
