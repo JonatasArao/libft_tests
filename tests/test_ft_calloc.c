@@ -6,10 +6,11 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/19 15:14:15 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/22 17:19:48 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/28 11:32:12 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdint.h>
 #include <stdlib.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -313,6 +314,44 @@ MU_TEST(test_ft_calloc_nmeb_forty_two_size_forty_two)
 	free(expected_result);
 }
 
+MU_TEST(test_ft_calloc_size_t_overflow)
+{
+	// ARRANGE
+	void	*actual_result;
+	size_t	large_nmemb;
+	size_t	large_size;
+
+	// ACT
+	large_nmemb = SIZE_MAX / 2 + 1;
+	large_size = 2;
+	actual_result = ft_calloc(large_nmemb, large_size);
+
+	// ASSERT
+	mu_assert(actual_result == NULL, "Expected NULL pointer due to size_t overflow");
+
+	// CLEANUP
+	free(actual_result);
+}
+
+MU_TEST(test_ft_calloc_size_t_overflow_reverse)
+{
+	// ARRANGE
+	void	*actual_result;
+	size_t	large_nmemb;
+	size_t	large_size;
+
+	// ACT
+	large_nmemb = 2;
+	large_size = SIZE_MAX / 2 + 1;
+	actual_result = ft_calloc(large_nmemb, large_size);
+
+	// ASSERT
+	mu_assert(actual_result == NULL, "Expected NULL pointer due to size_t overflow");
+
+	// CLEANUP
+	free(actual_result);
+}
+
 MU_TEST(test_ft_calloc_malloc_fail)
 {
 	// ARRANGE
@@ -351,6 +390,8 @@ MU_TEST_SUITE(ft_calloc_test_suite)
 	MU_RUN_TEST(test_ft_calloc_nmeb_four_size_two);
 	MU_RUN_TEST(test_ft_calloc_nmeb_forty_two_size_forty_two);
 	MU_RUN_TEST(test_ft_calloc_malloc_fail);
+	MU_RUN_TEST(test_ft_calloc_size_t_overflow);
+	MU_RUN_TEST(test_ft_calloc_size_t_overflow_reverse);
 }
 
 int	main(void) {
