@@ -6,15 +6,10 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 14:09:43 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/28 14:47:24 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/28 15:02:15 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <signal.h>
 #include "minunit.h"
 
 typedef struct s_list
@@ -24,33 +19,6 @@ typedef struct s_list
 }	t_list;
 
 int	ft_lstsize(t_list *lst);
-
-int	capture_segfault_ft_lstsize(int (*f)(t_list *), t_list *lst)
-{
-	pid_t pid = fork();
-	if (pid == 0)
-	{
-		// Child process executes the test
-		f(lst);
-		exit(0);
-	}
-	else if (pid > 0)
-	{
-		// Parent process waits for the child
-		int status;
-		waitpid(pid, &status, 0);
-		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGSEGV)
-		{
-			return 1;
-		}
-		return 0;
-	}
-	else
-	{
-		perror("fork");
-		exit(1);
-	}
-}
 
 MU_TEST(test_ft_lstsize_one_node_list)
 {
