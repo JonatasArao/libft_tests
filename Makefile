@@ -81,7 +81,8 @@ BONUS_FUNC	=	ft_lstnew \
 				ft_lstlast \
 				ft_lstadd_back \
 				ft_lstdelone \
-				ft_lstclear
+				ft_lstclear \
+				ft_lstiter
 EXIST_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
 MISS_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
 EXIST_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
