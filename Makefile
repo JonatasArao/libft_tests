@@ -35,7 +35,8 @@ endif
 
 # Mock library and sources
 MOCKLIB		=	$(LIBDIR)/libmocks.$(SHARED_LIB_EXT)
-MOCK		=	malloc
+MOCK		=	malloc \
+				free
 MOCKS_SRCS	=	$(addsuffix .c, $(addprefix $(MOCKDIR)/mock_, $(MOCK)))
 MOCK_OBJS	=	$(MOCKS_SRCS:.c=.o)
 
@@ -78,7 +79,8 @@ BONUS_FUNC	=	ft_lstnew \
 				ft_lstadd_front \
 				ft_lstsize \
 				ft_lstlast \
-				ft_lstadd_back
+				ft_lstadd_back \
+				ft_lstdelone
 EXIST_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
 MISS_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
 EXIST_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
