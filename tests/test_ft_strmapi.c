@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/23 14:52:15 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/23 15:12:41 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/29 17:30:23 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,8 +129,8 @@ MU_TEST(test_ft_strmapi_s1_null)
 	int		actual_result;
 
 	// ACT & ASSERT
-	actual_result = 1;
-	expected_result = capture_segfault_ft_strmapi(&ft_strmapi, NULL, &toggle_case);
+	expected_result = 1;
+	actual_result = capture_segfault_ft_strmapi(&ft_strmapi, NULL, &toggle_case);
 	mu_assert(expected_result == actual_result, "Expected segmentation fault, but it did not occur.");
 }
 
@@ -140,8 +140,8 @@ MU_TEST(test_ft_strmapi_s2_null)
 	int		actual_result;
 
 	// ACT & ASSERT
-	actual_result = 1;
-	expected_result = capture_segfault_ft_strmapi(&ft_strmapi, "42", NULL);
+	expected_result = 1;
+	actual_result = capture_segfault_ft_strmapi(&ft_strmapi, "42", NULL);
 	mu_assert(expected_result == actual_result, "Expected segmentation fault, but it did not occur.");
 }
 
@@ -151,8 +151,8 @@ MU_TEST(test_ft_strmapi_s1_null_s2_null)
 	int		actual_result;
 
 	// ACT & ASSERT
-	actual_result = 1;
-	expected_result = capture_segfault_ft_strmapi(&ft_strmapi, NULL, NULL);
+	expected_result = 1;
+	actual_result = capture_segfault_ft_strmapi(&ft_strmapi, NULL, NULL);
 	mu_assert(expected_result == actual_result, "Expected segmentation fault, but it did not occur.");
 }
 

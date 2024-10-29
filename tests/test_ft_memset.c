@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/18 18:09:39 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/18 19:34:27 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/29 17:30:23 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,8 +188,8 @@ MU_TEST(test_ft_memset_null_pointer)
 	int		actual_result;
 
 	// ACT & ASSERT
-	actual_result = 1;
-	expected_result = capture_segfault_ft_memset(&ft_memset, NULL, 'F', 1);
+	expected_result = 1;
+	actual_result = capture_segfault_ft_memset(&ft_memset, NULL, 'F', 1);
 	mu_assert(expected_result == actual_result, "Expected segmentation fault, but it did not occur.");
 }
 
