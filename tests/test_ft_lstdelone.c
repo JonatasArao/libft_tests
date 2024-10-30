@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 16:17:27 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/29 17:32:23 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/30 12:12:27 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,9 @@ typedef struct s_list
 
 void	ft_lstdelone(t_list *lst, void (*del)(void *));
 
-extern int mock_free_failure_active;
+extern int mock_free_counter_active;
 
-extern int mock_free_memset_active;
-
-extern int mock_free_memset_size;
+extern int mock_free_counter;
 
 int	capture_segfault_ft_lstdelone(void (*f)(t_list *, void (*)(void *)), t_list *lst, void (*del)(void *))
 {
@@ -59,26 +57,22 @@ int	capture_segfault_ft_lstdelone(void (*f)(t_list *, void (*)(void *)), t_list 
 	}
 }
 
-void	reset_int_pointer(void *ptr)
-{
-	int *int_ptr;
+int	delete_function_counter;
 
-	int_ptr = (int *)ptr;
-	*int_ptr = 0;
-}
-
-void	do_nothing(void *ptr)
+void	increment_delete_function_counter(void *ptr)
 {
-	(void) ptr;
+	free(ptr);
+	delete_function_counter++;
 }
 
 MU_TEST(test_ft_lstdelone_free_int_node)
 {
 	// ARRANGE
-	void	*expected_result;
-	void	*actual_result;
+	int	expected_result;
+	int	actual_result;
 	t_list *node;
 	int *content;
+	char	message[80];
 
 	// ACT
 	node = malloc(sizeof(t_list));
@@ -86,22 +80,16 @@ MU_TEST(test_ft_lstdelone_free_int_node)
 	*content = 42;
 	node->content = content;
 	node->next = NULL;
-	mock_free_memset_active = 1;
-	mock_free_memset_size = sizeof(t_list);
-	ft_lstdelone(node, &do_nothing);
-	mock_free_memset_active = 0;
-	mock_free_memset_size = 0;
-	expected_result = malloc(sizeof(t_list));
-	memset(expected_result, 0xFF, sizeof(t_list));
-	actual_result = node;
+	mock_free_counter_active = 1;
+	mock_free_counter = 0;
+	ft_lstdelone(node, free);
+	mock_free_counter_active = 0;
+	expected_result = 2;
+	actual_result = mock_free_counter;
+	snprintf(message, sizeof(message), "Expected %d memory allocations to be freed, but %d were not freed.\n", expected_result, expected_result - actual_result);
 
 	// ASSERT
-	mu_assert(memcmp(expected_result, actual_result, sizeof(t_list)) == 0, "Node memory was not properly freed");
-
-	// CLEANUP
-	free(expected_result);
-	free(content);
-	free(node);
+	mu_assert(expected_result == actual_result, message);
 }
 
 MU_TEST(test_ft_lstdelone_delete_int_node_content)
@@ -111,6 +99,7 @@ MU_TEST(test_ft_lstdelone_delete_int_node_content)
 	int		actual_result;
 	t_list *node;
 	int *content;
+	char	message[80];
 
 	// ACT
 	node = malloc(sizeof(t_list));
@@ -118,18 +107,14 @@ MU_TEST(test_ft_lstdelone_delete_int_node_content)
 	*content = 42;
 	node->content = content;
 	node->next = NULL;
-	mock_free_failure_active = 1;
-	ft_lstdelone(node, &reset_int_pointer);
-	mock_free_failure_active = 0;
-	expected_result = 0;
-	actual_result = *(int *)node->content;
+	delete_function_counter = 0;
+	ft_lstdelone(node, increment_delete_function_counter);
+	expected_result = 1;
+	actual_result = delete_function_counter;
+	snprintf(message, sizeof(message), "Expected delete function to be called %d times, but it was called %d times.\n", expected_result, actual_result);
 
 	// ASSERT
-	mu_assert(expected_result == actual_result, "Integer content was not properly deleted");
-
-	// CLEANUP
-	free(content);
-	free(node);
+	mu_assert(expected_result == actual_result, message);
 }
 
 MU_TEST(test_ft_lstdelone_null_node_pointer)
@@ -139,7 +124,7 @@ MU_TEST(test_ft_lstdelone_null_node_pointer)
 
 	// ACT & ASSERT
 	expected_result = 1;
-	actual_result = capture_segfault_ft_lstdelone(&ft_lstdelone, NULL, &do_nothing);
+	actual_result = capture_segfault_ft_lstdelone(&ft_lstdelone, NULL, free);
 	mu_assert(expected_result == actual_result, "Expected segmentation fault, but it did not occur.");
 }
 

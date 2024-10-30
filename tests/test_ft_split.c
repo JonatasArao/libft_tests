@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:26:20 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/24 18:31:55 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:43:48 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@ extern int mock_malloc_memset_active;
 extern int mock_malloc_failure_active;
 
 extern int mock_malloc_failure_threshold;
+
+extern int mock_free_counter_active;
+
+extern int mock_free_counter;
 
 int capture_segfault_ft_split(char **(*f)(const char *, char), char const *s, char c)
 {
@@ -367,6 +371,33 @@ MU_TEST(test_ft_split_third_malloc_fail)
 	else
 		mu_fail("Function should not cause a segmentation fault.");
 }
+
+MU_TEST(test_ft_split_free_matrix)
+{
+	// ARRANGE
+	int		expected_result;
+	int		actual_result;
+	char	**splited;
+	char	message[80];
+
+	// ACT
+	mock_malloc_failure_active = 1;
+	mock_malloc_failure_threshold = 4;
+	mock_free_counter_active = 1;
+	mock_free_counter = 0;
+	splited = ft_split("42 (forty-two) School", ' ');
+	mock_free_counter_active = 0;
+	mock_malloc_failure_active = 0;
+	expected_result = 3;
+	actual_result = mock_free_counter;
+	snprintf(message, sizeof(message), "Expected %d memory allocations to be freed, but %d were not freed.\n", expected_result, expected_result - actual_result);
+
+	// ASSERT
+	mu_assert(expected_result == actual_result, message);
+
+	// CLEANUP
+	free(splited);
+}
 MU_TEST_SUITE(ft_split_test_suite)
 {
 	MU_RUN_TEST(test_ft_split_null_terminated);
@@ -381,6 +412,7 @@ MU_TEST_SUITE(ft_split_test_suite)
 	MU_RUN_TEST(test_ft_split_first_malloc_fail);
 	MU_RUN_TEST(test_ft_split_second_malloc_fail);
 	MU_RUN_TEST(test_ft_split_third_malloc_fail);
+	MU_RUN_TEST(test_ft_split_free_matrix);
 }
 
 int	main(void) {
