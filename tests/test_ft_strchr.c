@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/17 09:38:23 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/29 17:30:23 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/30 13:55:11 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,7 +212,7 @@ MU_TEST(test_ft_strchr_non_ascii_in_forty_two)
 	}
 	expected_result = &string[1];
 	actual_result = ft_strchr(string, 155);
-	snprintf(message, sizeof(message), "%sExpected memory address %p but was %p\n", string, (void *)expected_result, (void *)actual_result);
+	snprintf(message, sizeof(message), "Expected memory address %p but was %p\n", (void *)expected_result, (void *)actual_result);
 
 	// ASSERT
 	mu_assert(expected_result == actual_result, message);
