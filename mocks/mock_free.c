@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 10:17:33 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/29 15:23:08 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/10/30 12:15:52 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,8 @@
 #include <dlfcn.h>
 
 // Global variables to control the behavior of the mock free function
-int mock_free_failure_active = 0; // Flag to activate mock behavior in free
-int mock_free_memset_active = 0; // Flag to activate mock behavior in free
-int mock_free_memset_size = 0; // Flag to activate mock behavior in free
+int mock_free_counter_active = 0; // Flag to activate counter behavior in free
+int mock_free_counter; // Counter to keep track of free calls
 
 // Mock free function
 void free(void *ptr) {
@@ -33,16 +32,9 @@ void free(void *ptr) {
 		exit(EXIT_FAILURE); // Exit the program in case of error
 	}
 
-	// If mock free failure and memset size are active, return early
-	if (mock_free_memset_active && mock_free_memset_size && ptr) {
-		memset(ptr, 0xFF, mock_free_memset_size); // Set allocated memory to 0xFF
-		return ; // Return early to avoid calling the original free function
-	}
-
-	// If mock behavior is active, return early to avoid calling the original free function
-	if (mock_free_failure_active) {
-		return ; // Return early to avoid calling the original free function
-	}
+	// If counter behavior is active, increment the counter
+	if (mock_free_counter_active)
+		mock_free_counter++;
 
 	// Call the original free function
 	original_free(ptr);
