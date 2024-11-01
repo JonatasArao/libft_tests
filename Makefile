@@ -86,18 +86,20 @@ BONUS_FUNC	=	ft_lstnew \
 				ft_lstmap
 EXIST_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
 MISS_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
-EXIST_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
-MISS_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
+EXIST_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(or $(wildcard $(SRCDIR)/$(func)_bonus.c), $(wildcard $(SRCDIR)/$(func).c)),$(func),))
+MISS_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(or $(wildcard $(SRCDIR)/$(func)_bonus.c), $(wildcard $(SRCDIR)/$(func).c)),,$(func)))
 LIBRARY		=	$(LIBDIR)/lib$(patsubst lib%,%,$(TARGET)).a
 INC			=	$(addprefix -I, $(INCDIR))
 HEADER		=	$(INCDIR)/libft.h
 SRCS		=	$(addsuffix .c, $(addprefix $(SRCDIR)/, $(EXIST_FUNC)))
 OBJS		=	$(SRCS:.c=.o)
-BONUS_SRCS	=	$(addsuffix .c, $(addprefix $(SRCDIR)/, $(EXIST_BONUS)))
+BONUS_SRCS	=	$(foreach file, $(EXIST_BONUS), $(wildcard $(SRCDIR)/$(file)_bonus.c) $(if $(wildcard $(SRCDIR)/$(file)_bonus.c),,$(SRCDIR)/$(file).c))
 BONUS_OBJS	=	$(BONUS_SRCS:.c=.o)
 TEST		=	$(EXIST_FUNC) $(EXIST_BONUS)
 TESTS_SRCS	=	$(addsuffix .c, $(addprefix $(TESTDIR)/test_, $(TEST)))
 TEST_OBJS	=	$(TESTS_SRCS:.c=.o)
+OUT_FILES	=	$(addsuffix .out, $(addprefix $(BINDIR)/$(TARGET)/test_, $(EXIST_FUNC))) \
+				$(foreach file, $(EXIST_BONUS), $(if $(wildcard $(SRCDIR)/$(file)_bonus.c), $(BINDIR)/$(TARGET)/test_$(file)_bonus.out, $(BINDIR)/$(TARGET)/test_$(file).out))
 
 # Phony targets
 .PHONY: all clean debug debug-multiple debug-single fclean re run run-debug run-debug-multiple run-debug-single
@@ -124,7 +126,7 @@ single: $(LIBRARY) $(MOCKLIB) $(BINDIR)/test.out
 	@echo "\033[1;33mTest for $(TEST) is available at: $(BINDIR)/test.out\033[0m"
 
 # Build all tests
-multiple: $(LIBRARY) $(MOCKLIB) $(addsuffix .out, $(addprefix $(BINDIR)/$(TARGET)/test_, $(TEST)))
+multiple: $(LIBRARY) $(MOCKLIB) $(OUT_FILES)
 	@echo "\033[1;33mAll tests are available at: $(BINDIR)/$(TARGET)/\033[0m"
 
 # Run target: runs the appropriate tests based on the number of tests
@@ -137,9 +139,9 @@ run-single: single
 
 # Run multiple tests target
 run-multiple: multiple
-	@for bin in $(addsuffix .out, $(addprefix $(BINDIR)/$(TARGET)/test_, $(TEST))); do \
+	@for bin in $(OUT_FILES); do \
 		bin_name=$$(basename $$bin | sed 's/^test_//' | sed 's/\.out$$//'); \
-		echo "\033[1;34mRunning test: $$bin_name\033[0m"; \
+		echo "\033[1;34mRunning test: $$(echo $$bin_name | sed 's/_bonus$$//')\033[0m"; \
 		$(LIBRARY_PATH_VAR)=$(LIBDIR) $$bin; \
 	done
 	@if [ "$(filter $(FUNC),$(MISS_FUNC))" ]; then \
@@ -163,9 +165,9 @@ debug-single: single
 
 # Debug multiple tests target
 debug-multiple: all
-	@for bin in $(addsuffix .out, $(addprefix $(BINDIR)/$(TARGET)/test_, $(TEST))); do \
+	@for bin in $(OUT_FILES); do \
 		bin_name=$$(basename $$bin | sed 's/^test_//' | sed 's/\.out$$//'); \
-		echo "\033[1;35mDebugging test: $$bin_name\033[0m"; \
+		echo "\033[1;35mDebugging test: $$(echo $$bin_name | sed 's/_bonus$$//')\033[0m"; \
 		$(LIBRARY_PATH_VAR)=$(LIBDIR) gdb --args $$bin; \
 	done
 	@if [ "$(filter $(FUNC),$(MISS_FUNC))" ]; then \
@@ -192,11 +194,16 @@ $(MOCKDIR)/%.o: $(MOCKDIR)/%.c
 # Library target: creates the libft library from object files
 $(LIBRARY): $(OBJS) $(BONUS_OBJS)
 	@mkdir -p $(LIBDIR)
-	@ar rcs $(LIBRARY) $(OBJS) $(BONUS_OBJS)
+	@ar rcs $(LIBRARY) $?
 	@echo "\033[1;32mBuild complete: libft library (lib$(patsubst lib%,%,$(TARGET)).a)\033[0m"
 
 # Rule to compile .c files in $(SRCDIR) to .o files
 $(SRCDIR)/%.o: $(SRCDIR)/%.c $(HEADER)
+	@$(COMPILE.c) $(INC) $(OUTPUT_OPTION) $<
+	@echo "\033[0;32mCompiled: $<\033[0m"
+
+# Rule to compile .c files in $(SRCDIR) to .o files
+$(SRCDIR)/%_bonus.o: $(SRCDIR)/%_bonus.c $(HEADER)
 	@$(COMPILE.c) $(INC) $(OUTPUT_OPTION) $<
 	@echo "\033[0;32mCompiled: $<\033[0m"
 
@@ -207,6 +214,12 @@ $(TESTDIR)/%.o: $(TESTDIR)/%.c $(HEADER)
 
 # Build target: compiles and links a test executable
 $(BINDIR)/$(TARGET)/test_%.out: $(TESTDIR)/test_%.o $(SRCDIR)/%.o
+	@mkdir -p $(BINDIR)/$(TARGET)
+	@$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
+	@echo "\033[1;32mBuild complete: $@\033[0m"
+
+# Build target: compiles and links a test executable
+$(BINDIR)/$(TARGET)/test_%_bonus.out: $(TESTDIR)/test_%.o $(SRCDIR)/%_bonus.o
 	@mkdir -p $(BINDIR)/$(TARGET)
 	@$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
 	@echo "\033[1;32mBuild complete: $@\033[0m"
