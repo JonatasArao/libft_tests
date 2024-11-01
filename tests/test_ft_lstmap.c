@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 14:09:43 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/30 12:15:26 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/11/01 14:42:44 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ extern int mock_malloc_memset_active;
 extern int mock_malloc_failure_active;
 
 extern int mock_malloc_failure_threshold;
+
+extern int mock_malloc_counter_active;
+
+extern int mock_malloc_counter;
 
 extern int mock_free_failure_active;
 
@@ -220,12 +224,15 @@ MU_TEST(test_ft_lstmap_free_int_multiple_nodes)
 	third_node->next = NULL;
 	mock_malloc_failure_active = 1;
 	mock_malloc_failure_threshold = 6;
+	mock_malloc_counter_active = 1;
+	mock_malloc_counter = 0;
 	mock_free_counter_active = 1;
 	mock_free_counter = 0;
 	ft_lstmap(first_node, double_int_number, free);
+	mock_malloc_counter_active = 0;
 	mock_free_counter_active = 0;
 	mock_malloc_failure_active = 0;
-	expected_result = 5;
+	expected_result = mock_malloc_counter;
 	actual_result = mock_free_counter;
 	snprintf(message, sizeof(message), "Expected %d memory allocations to be freed, but %d were not freed.\n", expected_result, expected_result - actual_result);
 

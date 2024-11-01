@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/15 10:17:33 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/24 18:03:10 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/11/01 14:35:34 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ int mock_malloc_memset_active = 0; // Flag to activate memset in malloc
 int mock_malloc_failure_active = 0; // Flag to activate malloc failure
 int mock_malloc_failure_threshold = 1; // Call count at which malloc should fail
 int mock_malloc_failure_counter = 0; // Counter for the number of malloc calls
+int mock_malloc_counter_active = 0; // Flag to activate counter behavior in malloc
+int mock_malloc_counter; // Counter to keep track of malloc calls
 
 // Mock malloc function
 void* malloc(size_t size) {
@@ -42,6 +44,10 @@ void* malloc(size_t size) {
 			return (NULL);
 		}
 	}
+
+	// If counter behavior is active, increment the counter
+	if (mock_malloc_counter_active)
+		mock_malloc_counter++;
 
 	// If memset mode is active, allocate memory and set it to 0xFF
 	if (mock_malloc_memset_active) {

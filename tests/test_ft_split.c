@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/24 13:26:20 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/30 13:43:48 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/11/01 14:36:45 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,10 @@ extern int mock_malloc_memset_active;
 extern int mock_malloc_failure_active;
 
 extern int mock_malloc_failure_threshold;
+
+extern int mock_malloc_counter_active;
+
+extern int mock_malloc_counter;
 
 extern int mock_free_counter_active;
 
@@ -383,12 +387,15 @@ MU_TEST(test_ft_split_free_matrix)
 	// ACT
 	mock_malloc_failure_active = 1;
 	mock_malloc_failure_threshold = 4;
+	mock_malloc_counter_active = 1;
+	mock_malloc_counter = 0;
 	mock_free_counter_active = 1;
 	mock_free_counter = 0;
 	splited = ft_split("42 (forty-two) School", ' ');
+	mock_malloc_counter_active = 0;
 	mock_free_counter_active = 0;
 	mock_malloc_failure_active = 0;
-	expected_result = 3;
+	expected_result = mock_malloc_counter;
 	actual_result = mock_free_counter;
 	snprintf(message, sizeof(message), "Expected %d memory allocations to be freed, but %d were not freed.\n", expected_result, expected_result - actual_result);
 

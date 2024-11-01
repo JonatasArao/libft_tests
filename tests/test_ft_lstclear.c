@@ -6,7 +6,7 @@
 /*   By: jarao-de <jarao-de@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/28 16:17:27 by jarao-de          #+#    #+#             */
-/*   Updated: 2024/10/30 12:12:32 by jarao-de         ###   ########.fr       */
+/*   Updated: 2024/11/01 14:41:20 by jarao-de         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,10 @@ MU_TEST(test_ft_lstclear_free_multiple_node)
 
 	// ASSERT
 	mu_assert(expected_result == actual_result, message);
+
+	// CLEANUP
+	free(first_value);
+	free(first_node);
 }
 
 MU_TEST(test_ft_lstclear_delete_int_multiple_node_content)
