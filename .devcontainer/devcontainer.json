@@ -9,9 +9,13 @@
 				"terminal.integrated.defaultProfile.linux": "zsh"
 			},
 			"extensions": [
-				"ms-vscode.cpptools",
+				"ms-vscode.cpptools-extension-pack",
 				"ms-azuretools.vscode-docker",
-				"github.copilot"
+				"github.copilot",
+				"ms-vscode.hexeditor",
+				"kube.42header",
+				"dokca.42-ft-count-line",
+				"mariusvanwijk-joppekoers.codam-norminette-3"
 			]
 		}
 	},
