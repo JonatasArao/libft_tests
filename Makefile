@@ -1,17 +1,23 @@
 # Compiler and flags
 CC			=	cc
 CFLAGS		=	-Wall -Wextra -Werror -g
-LDFLAGS		=	-lrt -lm -L$(LIBDIR) -l$(patsubst lib%,%,$(TARGET)) -lmocks
+LDFLAGS		=	-lrt -lm -L$(LIB_DIR) -l$(patsubst lib%,%,$(TARGET)) -lmocks
 RM			=	rm -rf
 
 # Directories and files
-TARGET		=	libft
-SRCDIR		=	$(TARGET)
-INCDIR		=	$(TARGET)
-TESTDIR		=	tests
-MOCKDIR		=	mocks
-BINDIR		=	build
-LIBDIR		=	lib
+TARGET			=	libft
+MANDATORY_DIR	=	$(TARGET)/mandatory
+BONUS_DIR		=	$(TARGET)/bonus
+CUSTOM_DIR		=	$(TARGET)/custom
+INC_DIR			=	$(TARGET)/includes
+TEST_DIR		=	tests
+MOCK_DIR		=	mocks
+BIN_DIR			=	build
+LIB_DIR			=	lib
+
+ifeq ($(TARGET), .)
+$(error TARGET cannot be the current directory ('.'))
+endif
 
 # Detect the operating system
 UNAME_S := $(shell uname -s)
@@ -34,72 +40,75 @@ else
 endif
 
 # Mock library and sources
-MOCKLIB		=	$(LIBDIR)/libmocks.$(SHARED_LIB_EXT)
+MOCKLIB		=	$(LIB_DIR)/libmocks.$(SHARED_LIB_EXT)
 MOCK		=	malloc \
 				free
-MOCKS_SRCS	=	$(addsuffix .c, $(addprefix $(MOCKDIR)/mock_, $(MOCK)))
+MOCKS_SRCS	=	$(addsuffix .c, $(addprefix $(MOCK_DIR)/mock_, $(MOCK)))
 MOCK_OBJS	=	$(MOCKS_SRCS:.c=.o)
 
 # Functions and sources
-FUNC		=	ft_isalpha \
-				ft_isdigit \
-				ft_isalnum \
-				ft_isascii \
-				ft_isprint \
-				ft_toupper \
-				ft_tolower \
-				ft_strlen \
-				ft_strdup \
-				ft_strlcpy \
-				ft_strlcat \
-				ft_strchr \
-				ft_strrchr \
-				ft_strncmp \
-				ft_strnstr \
-				ft_atoi \
-				ft_memset \
-				ft_bzero \
-				ft_calloc \
-				ft_memcpy \
-				ft_memchr \
-				ft_memcmp \
-				ft_memmove \
-				ft_putchar_fd \
-				ft_putstr_fd \
-				ft_putendl_fd \
-				ft_putnbr_fd \
-				ft_substr \
-				ft_strjoin \
-				ft_strtrim \
-				ft_striteri \
-				ft_strmapi \
-				ft_itoa \
-				ft_split
-BONUS_FUNC	=	ft_lstnew \
-				ft_lstadd_front \
-				ft_lstsize \
-				ft_lstlast \
-				ft_lstadd_back \
-				ft_lstdelone \
-				ft_lstclear \
-				ft_lstiter \
-				ft_lstmap
-EXIST_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),$(func),))
-MISS_FUNC	=	$(foreach func,$(FUNC),$(if $(wildcard $(SRCDIR)/$(func).c),,$(func)))
-EXIST_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(or $(wildcard $(SRCDIR)/$(func)_bonus.c), $(wildcard $(SRCDIR)/$(func).c)),$(func),))
-MISS_BONUS	=	$(foreach func,$(BONUS_FUNC),$(if $(or $(wildcard $(SRCDIR)/$(func)_bonus.c), $(wildcard $(SRCDIR)/$(func).c)),,$(func)))
-LIBRARY		=	$(LIBDIR)/lib$(patsubst lib%,%,$(TARGET)).a
-INC			=	$(addprefix -I, $(INCDIR))
-HEADER		=	$(INCDIR)/libft.h
-SRCS		=	$(addsuffix .c, $(addprefix $(SRCDIR)/, $(EXIST_FUNC)))
-OBJS		=	$(SRCS:.c=.o)
-BONUS_SRCS	=	$(foreach file, $(EXIST_BONUS), $(wildcard $(SRCDIR)/$(file)_bonus.c) $(if $(wildcard $(SRCDIR)/$(file)_bonus.c),,$(SRCDIR)/$(file).c))
-BONUS_OBJS	=	$(BONUS_SRCS:.c=.o)
-TEST		=	$(EXIST_FUNC) $(EXIST_BONUS)
-TESTS_SRCS	=	$(addsuffix .c, $(addprefix $(TESTDIR)/test_, $(TEST)))
-TEST_OBJS	=	$(TESTS_SRCS:.c=.o)
-OUT_FILES	=	$(addsuffix .out, $(addprefix $(BINDIR)/$(TARGET)/test_, $(EXIST_FUNC))) \
-				$(foreach file, $(EXIST_BONUS), $(if $(wildcard $(SRCDIR)/$(file)_bonus.c), $(BINDIR)/$(TARGET)/test_$(file)_bonus.out, $(BINDIR)/$(TARGET)/test_$(file).out))
+FUNC			=	ft_isalpha \
+					ft_isdigit \
+					ft_isalnum \
+					ft_isascii \
+					ft_isprint \
+					ft_toupper \
+					ft_tolower \
+					ft_strlen \
+					ft_strdup \
+					ft_strlcpy \
+					ft_strlcat \
+					ft_strchr \
+					ft_strrchr \
+					ft_strncmp \
+					ft_strnstr \
+					ft_atoi \
+					ft_memset \
+					ft_bzero \
+					ft_calloc \
+					ft_memcpy \
+					ft_memchr \
+					ft_memcmp \
+					ft_memmove \
+					ft_putchar_fd \
+					ft_putstr_fd \
+					ft_putendl_fd \
+					ft_putnbr_fd \
+					ft_substr \
+					ft_strjoin \
+					ft_strtrim \
+					ft_striteri \
+					ft_strmapi \
+					ft_itoa \
+					ft_split
+BONUS_FUNC		=	ft_lstnew \
+					ft_lstadd_front \
+					ft_lstsize \
+					ft_lstlast \
+					ft_lstadd_back \
+					ft_lstdelone \
+					ft_lstclear \
+					ft_lstiter \
+					ft_lstmap
+CUSTOM_FUNC		=	ft_atoi_base
+EXIST_FUNC		=	$(foreach func,$(FUNC),$(if $(wildcard $(MANDATORY_DIR)/$(func).c),$(func),))
+MISS_FUNC		=	$(foreach func,$(FUNC),$(if $(wildcard $(MANDATORY_DIR)/$(func).c),,$(func)))
+EXIST_BONUS		=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(BONUS_DIR)/$(func).c),$(func),))
+MISS_BONUS		=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(BONUS_DIR)/$(func).c),,$(func)))
+EXIST_CUSTOM	=	$(foreach func,$(CUSTOM_FUNC),$(if $(wildcard $(CUSTOM_DIR)/$(func).c),$(func),))
+MISS_CUSTOM		=	$(foreach func,$(CUSTOM_FUNC),$(if $(wildcard $(CUSTOM_DIR)/$(func).c),,$(func)))
+LIBRARY			=	$(LIB_DIR)/lib$(patsubst lib%,%,$(TARGET)).a
+INC				=	-I$(INC_DIR)
+HEADER			=	$(INC_DIR)/libft.h
+SRCS			=	$(addprefix $(MANDATORY_DIR)/, $(addsuffix .c, $(EXIST_FUNC))) \
+					$(addprefix $(BONUS_DIR)/, $(addsuffix .c, $(EXIST_BONUS))) \
+					$(addprefix $(CUSTOM_DIR)/, $(addsuffix .c, $(EXIST_CUSTOM)))
+TEST			=	$(EXIST_FUNC) $(EXIST_BONUS) $(EXIST_CUSTOM)
+TESTS_SRCS		=	$(addsuffix .c, $(addprefix $(TEST_DIR)/test_, $(TEST)))
+TEST_OBJS		=	$(TESTS_SRCS:.c=.o)
+OUT_FILES		=	$(addsuffix .out, $(addprefix $(BIN_DIR)/$(TARGET)/test_, $(EXIST_FUNC))) \
+					$(addsuffix .out, $(addprefix $(BIN_DIR)/$(TARGET)/test_, $(EXIST_BONUS))) \
+					$(addsuffix .out, $(addprefix $(BIN_DIR)/$(TARGET)/test_, $(EXIST_CUSTOM))) \
 
 # Phony targets
 .PHONY: all clean debug debug-multiple debug-single fclean re run run-debug run-debug-multiple run-debug-single
@@ -120,14 +129,22 @@ all: $(if $(filter 1,$(words $(TEST))),single,multiple)
 			echo "\033[0;31m$(MISS_BONUS)\033[0m" | xargs -n 6 | column -t; \
 		fi \
 	fi
+	@if [ "$(filter $(CUSTOM_FUNC),$(EXIST_CUSTOM))" ]; then \
+		echo "\033[1;35mAvailable custom functions:\033[0m"; \
+		echo "\033[0;37m$(EXIST_CUSTOM)\033[0m" | xargs -n 6 | column -t; \
+		if [ "$(filter $(CUSTOM_FUNC),$(MISS_CUSTOM))" ]; then \
+			echo "\033[1;31mMissing custom functions:\033[0m"; \
+			echo "\033[0;31m$(MISS_CUSTOM)\033[0m" | xargs -n 6 | column -t; \
+		fi \
+	fi
 
 # Single function build: builds the library and a single test executable
-single: $(LIBRARY) $(MOCKLIB) $(BINDIR)/test.out
-	@echo "\033[1;33mTest for $(TEST) is available at: $(BINDIR)/test.out\033[0m"
+single: $(LIBRARY) $(MOCKLIB) $(BIN_DIR)/test.out
+	@echo "\033[1;33mTest for $(TEST) is available at: $(BIN_DIR)/test.out\033[0m"
 
 # Build all tests
 multiple: $(LIBRARY) $(MOCKLIB) $(OUT_FILES)
-	@echo "\033[1;33mAll tests are available at: $(BINDIR)/$(TARGET)/\033[0m"
+	@echo "\033[1;33mAll tests are available at: $(BIN_DIR)/$(TARGET)/\033[0m"
 
 # Run target: runs the appropriate tests based on the number of tests
 run: $(if $(filter 1,$(words $(TEST))),run-single,run-multiple)
@@ -135,14 +152,14 @@ run: $(if $(filter 1,$(words $(TEST))),run-single,run-multiple)
 # Run single test target
 run-single: single
 	@echo "\033[1;34mRunning test: $(TEST)\033[0m"; \
-	$(LIBRARY_PATH_VAR)=$(LIBDIR) $(BINDIR)/test.out; \
+	$(LIBRARY_PATH_VAR)=$(LIB_DIR) $(BIN_DIR)/test.out; \
 
 # Run multiple tests target
 run-multiple: multiple
 	@for bin in $(OUT_FILES); do \
 		bin_name=$$(basename $$bin | sed 's/^test_//' | sed 's/\.out$$//'); \
-		echo "\033[1;34mRunning test: $$(echo $$bin_name | sed 's/_bonus$$//')\033[0m"; \
-		$(LIBRARY_PATH_VAR)=$(LIBDIR) $$bin; \
+		echo "\033[1;34mRunning test: $$(echo $$bin_name)\033[0m"; \
+		$(LIBRARY_PATH_VAR)=$(LIB_DIR) $$bin; \
 	done
 	@if [ "$(filter $(FUNC),$(MISS_FUNC))" ]; then \
 		echo "\033[1;31mMissing functions:\033[0m"; \
@@ -152,6 +169,12 @@ run-multiple: multiple
 		if [ "$(filter $(BONUS_FUNC),$(MISS_BONUS))" ]; then \
 			echo "\033[1;31mMissing bonus functions:\033[0m"; \
 			echo "\033[0;31m$(MISS_BONUS)\033[0m" | xargs -n 6 | column -t; \
+		fi \
+	fi
+	@if [ "$(filter $(CUSTOM_FUNC),$(EXIST_CUSTOM))" ]; then \
+		if [ "$(filter $(CUSTOM_FUNC),$(MISS_CUSTOM))" ]; then \
+			echo "\033[1;31mMissing custom functions:\033[0m"; \
+			echo "\033[0;31m$(MISS_CUSTOM)\033[0m" | xargs -n 6 | column -t; \
 		fi \
 	fi
 
@@ -161,14 +184,14 @@ debug: $(if $(filter 1,$(words $(TEST))),debug-single,debug-multiple)
 # Debug single test target
 debug-single: single
 	@echo "\033[1;35mDebugging test: $(TEST)\033[0m"
-	@$(LIBRARY_PATH_VAR)=$(LIBDIR) gdb --args $(BINDIR)/test.out
+	@$(LIBRARY_PATH_VAR)=$(LIB_DIR) gdb --args $(BIN_DIR)/test.out
 
 # Debug multiple tests target
 debug-multiple: all
 	@for bin in $(OUT_FILES); do \
 		bin_name=$$(basename $$bin | sed 's/^test_//' | sed 's/\.out$$//'); \
-		echo "\033[1;35mDebugging test: $$(echo $$bin_name | sed 's/_bonus$$//')\033[0m"; \
-		$(LIBRARY_PATH_VAR)=$(LIBDIR) gdb --args $$bin; \
+		echo "\033[1;35mDebugging test: $$(echo $$bin_name)\033[0m"; \
+		$(LIBRARY_PATH_VAR)=$(LIB_DIR) gdb --args $$bin; \
 	done
 	@if [ "$(filter $(FUNC),$(MISS_FUNC))" ]; then \
 		echo "\033[1;31mMissing functions:\033[0m"; \
@@ -180,64 +203,60 @@ debug-multiple: all
 			echo "\033[0;31m$(MISS_BONUS)\033[0m" | xargs -n 6 | column -t; \
 		fi \
 	fi
+	@if [ "$(filter $(CUSTOM_FUNC),$(EXIST_CUSTOM))" ]; then \
+		if [ "$(filter $(CUSTOM_FUNC),$(MISS_CUSTOM))" ]; then \
+			echo "\033[1;31mMissing custom functions:\033[0m"; \
+			echo "\033[0;31m$(MISS_CUSTOM)\033[0m" | xargs -n 6 | column -t; \
+		fi \
+	fi
+
+$(LIB_DIR):
+	mkdir -p $(LIB_DIR)
 
 # Compile the shared library for mocks
-$(MOCKLIB): $(MOCK_OBJS)
+$(MOCKLIB): $(MOCK_OBJS) | $(LIB_DIR)
 	@$(CC) $(CFLAGS) $(SHARED_LIB_FLAGS) -o $@ $^ -ldl
 	@echo "\033[1;32mBuild complete: mock library\033[0m"
 
-# Rule to compile .c files in $(MOCKDIR) to .o files
-$(MOCKDIR)/%.o: $(MOCKDIR)/%.c
+# Rule to compile .c files in $(MOCK_DIR) to .o files
+$(MOCK_DIR)/%.o: $(MOCK_DIR)/%.c
 	@$(CC) $(CFLAGS) -fPIC -c -o $@ $<
 	@echo "\033[0;32mCompiled: $<\033[0m"
 
 # Library target: creates the libft library from object files
-$(LIBRARY): $(OBJS) $(BONUS_OBJS)
-	@mkdir -p $(LIBDIR)
-	@ar rcs $(LIBRARY) $?
+$(LIBRARY): $(SRCS) | $(LIB_DIR)
+	@echo $(SRCS)
+	@make debug -C $(TARGET)
+	@cp $(TARGET)/libft.a $(LIB_DIR)/lib$(patsubst lib%,%,$(TARGET)).a
 	@echo "\033[1;32mBuild complete: libft library (lib$(patsubst lib%,%,$(TARGET)).a)\033[0m"
 
-# Rule to compile .c files in $(SRCDIR) to .o files
-$(SRCDIR)/%.o: $(SRCDIR)/%.c $(HEADER)
-	@$(COMPILE.c) $(INC) $(OUTPUT_OPTION) $<
-	@echo "\033[0;32mCompiled: $<\033[0m"
-
-# Rule to compile .c files in $(SRCDIR) to .o files
-$(SRCDIR)/%_bonus.o: $(SRCDIR)/%_bonus.c $(HEADER)
-	@$(COMPILE.c) $(INC) $(OUTPUT_OPTION) $<
-	@echo "\033[0;32mCompiled: $<\033[0m"
-
-# Rule to compile .c files in $(TESTDIR) to .o files
-$(TESTDIR)/%.o: $(TESTDIR)/%.c $(HEADER)
+# Rule to compile .c files in $(TEST_DIR) to .o files
+$(TEST_DIR)/%.o: $(TEST_DIR)/%.c $(HEADER) $(LIBRARY)
 	@$(COMPILE.c) $(INC) $(OUTPUT_OPTION) $<
 	@echo "\033[0;32mCompiled: $<\033[0m"
 
 # Build target: compiles and links a test executable
-$(BINDIR)/$(TARGET)/test_%.out: $(TESTDIR)/test_%.o $(SRCDIR)/%.o
-	@mkdir -p $(BINDIR)/$(TARGET)
-	@$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
-	@echo "\033[1;32mBuild complete: $@\033[0m"
-
-# Build target: compiles and links a test executable
-$(BINDIR)/$(TARGET)/test_%_bonus.out: $(TESTDIR)/test_%.o $(SRCDIR)/%_bonus.o
-	@mkdir -p $(BINDIR)/$(TARGET)
+$(BIN_DIR)/$(TARGET)/test_%.out: $(TEST_DIR)/test_%.o $(LIBRARY)
+	@mkdir -p $(BIN_DIR)/$(TARGET)
 	@$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
 	@echo "\033[1;32mBuild complete: $@\033[0m"
 
 # Build target to debug a selected test: compiles and links a single test debug executable
-$(BINDIR)/test.out: $(TEST_OBJS) $(OBJS) $(BONUS_OBJS)
-	@mkdir -p $(BINDIR)
+$(BIN_DIR)/test.out: $(TEST_OBJS) $(LIBRARY)
+	@mkdir -p $(BIN_DIR)
 	@$(CC) $(CFLAGS) $< $(LDFLAGS) -o $@
 	@echo "\033[1;32mBuild complete: test.out\033[0m"
 
 # Clean target
 clean:
-	@$(RM) $(OBJS) $(BONUS_OBJS) $(TEST_OBJS) $(MOCK_OBJS)
+	@$(RM) $(TEST_OBJS) $(MOCK_OBJS)
+	@make clean -C $(TARGET)
 	@echo "\033[1;36mClean complete\033[0m"
 
 # Full clean target
 fclean: clean
-	@$(RM) $(BINDIR) $(LIBDIR)
+	@$(RM) $(BIN_DIR) $(LIB_DIR)
+	@make fclean -C $(TARGET)
 	@echo "\033[1;34mFull clean complete\033[0m"
 
 # Rebuild target
