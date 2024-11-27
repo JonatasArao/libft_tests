@@ -90,7 +90,10 @@ BONUS_FUNC		=	ft_lstnew \
 					ft_lstclear \
 					ft_lstiter \
 					ft_lstmap
-CUSTOM_FUNC		=	ft_atoi_base
+CUSTOM_FUNC		=	get_next_line \
+					ft_atoi_base \
+					ft_isxdigit \
+					ft_free_matrix
 EXIST_FUNC		=	$(foreach func,$(FUNC),$(if $(wildcard $(MANDATORY_DIR)/$(func).c),$(func),))
 MISS_FUNC		=	$(foreach func,$(FUNC),$(if $(wildcard $(MANDATORY_DIR)/$(func).c),,$(func)))
 EXIST_BONUS		=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(BONUS_DIR)/$(func).c),$(func),))
