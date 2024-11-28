@@ -96,7 +96,8 @@ CUSTOM_FUNC		=	get_next_line \
 					ft_free_matrix \
 					ft_delpointer \
 					ft_strtoupperi \
-					ft_strtoloweri
+					ft_strtoloweri \
+					ft_count_if
 EXIST_FUNC		=	$(foreach func,$(FUNC),$(if $(wildcard $(MANDATORY_DIR)/$(func).c),$(func),))
 MISS_FUNC		=	$(foreach func,$(FUNC),$(if $(wildcard $(MANDATORY_DIR)/$(func).c),,$(func)))
 EXIST_BONUS		=	$(foreach func,$(BONUS_FUNC),$(if $(wildcard $(BONUS_DIR)/$(func).c),$(func),))
