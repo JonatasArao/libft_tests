@@ -95,8 +95,6 @@ CUSTOM_FUNC		=	get_next_line \
 					ft_isxdigit \
 					ft_free_matrix \
 					ft_delpointer \
-					ft_strtoupperi \
-					ft_strtoloweri \
 					ft_count_if \
 					ft_strall
 EXIST_FUNC		=	$(foreach func,$(FUNC),$(if $(wildcard $(MANDATORY_DIR)/$(func).c),$(func),))
