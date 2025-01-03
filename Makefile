@@ -91,7 +91,7 @@ BONUS_FUNC		=	ft_lstnew \
 					ft_lstiter \
 					ft_lstmap
 CUSTOM_FUNC		=	get_next_line \
-					ft_atoi_base \
+					ft_strtol \
 					ft_isxdigit \
 					ft_free_matrix \
 					ft_delpointer \
